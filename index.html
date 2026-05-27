@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProtoLearn — AI 學習教材原型設計</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+
+  :root {
+    --canvas: #f4f3f1;
+    --text: #333333;
+    --text-dim: #aaaaaa;
+    --text-info: #4d4d4d;
+    --border: #dddddd;
+    --shadow: rgba(90,50,40,0.15) 0px 5px 15px 0px, rgba(80,40,30,0.1) 0px 4px 8px 0px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: system-ui, 'Helvetica Neue', 'Segoe UI', Arial, 'PingFang TC', sans-serif;
+    background: var(--canvas);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 80px 40px 120px;
+  }
+
+  /* Hero bio */
+  .hero {
+    text-align: center;
+    margin-bottom: 122px;
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--text);
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    margin-bottom: 20px;
+  }
+
+  .hero p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    font-weight: 400;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* Section label */
+  .section-label {
+    font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    font-size: 14px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text-dim);
+    letter-spacing: -0.49px;
+    margin-bottom: 32px;
+  }
+
+  /* Project grid */
+  .project-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    max-width: 640px;
+  }
+
+  /* Project card */
+  .project-card {
+    background: var(--canvas);
+    border-radius: 5px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .project-card:hover {
+    transform: translateY(-3px);
+    box-shadow: rgba(90,50,40,0.2) 0px 8px 24px 0px, rgba(80,40,30,0.12) 0px 6px 12px 0px;
+  }
+
+  .project-card .thumb {
+    padding: 20px 20px 0;
+  }
+
+  .project-card .thumb img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    display: block;
+  }
+
+  .project-card .info {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .project-card .title {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .project-card .meta {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 122px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  footer a {
+    color: var(--text-dim);
+    text-decoration: none;
+  }
+
+  footer a:hover {
+    color: var(--text);
+  }
+
+  /* Responsive — 作品多了之後改回雙欄 */
+  /* @media (min-width: 800px) {
+    .project-grid {
+      grid-template-columns: 1fr 1fr;
+      max-width: none;
+    }
+  } */
+
+  @media (max-width: 600px) {
+    .page { padding: 48px 20px 80px; }
+    .hero { margin-bottom: 80px; }
+    .hero p { font-size: 17px; }
+    footer { margin-top: 80px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="hero">
+    <h1>ProtoLearn</h1>
+    <p>用 AI 快速設計學習教材原型。針對不同主題打造專屬的視覺風格與教學結構，每個頁面都可直接用來學習。</p>
+  </div>
+
+  <p class="section-label">Selected Projects</p>
+
+  <div class="project-grid">
+
+    <a class="project-card" href="storyboard-tutorial/">
+      <div class="thumb">
+        <img src="storyboard-tutorial/thumbnail.png" alt="GPT-Image-2 Storyboard 教學">
+      </div>
+      <div class="info">
+        <span class="title">GPT-Image-2 Storyboard 教學</span>
+        <span class="meta">Tutorial · 2026</span>
+      </div>
+    </a>
+
+    <!-- 未來新增作品 -->
+
+  </div>
+
+  <footer>
+    <p>Charles Yang · 2026</p>
+  </footer>
+
+</div>
+</body>
+</html>

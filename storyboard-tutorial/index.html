@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPT-Image-2 API Storyboard 教學</title>
+<style>
+  /* ProtoLearn 返回首頁浮動按鈕 */
+  .pl-home-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #fff;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: background 0.2s ease, transform 0.2s ease;
+    opacity: 0.75;
+  }
+  .pl-home-btn:hover {
+    background: rgba(0,0,0,0.65);
+    opacity: 1;
+    transform: translateX(-2px);
+  }
+  .pl-home-btn svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #f5f1e4;
+    --surface: #ffffff;
+    --surface-2: #e0dbce;
+    --border: #d5d5d4;
+    --border-dark: #2c2e2a;
+    --text: #2c2e2a;
+    --text-dim: #80827f;
+    --accent: #8ed462;
+    --accent-2: #2ba0ff;
+    --warn: #ff9600;
+    --danger: #ff705d;
+    --font: 'Inter', -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "PingFang TC", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  /* --- NAV --- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(245, 241, 228, 0.9);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .inner {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 52px;
+    padding: 0 1.5rem;
+    overflow-x: auto;
+  }
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--accent-2); }
+  nav .logo {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 0.92rem;
+  }
+
+  /* --- HERO --- */
+  .hero {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 2rem;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.25;
+    margin-bottom: 1rem;
+  }
+  .hero .subtitle {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 580px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.8;
+  }
+  .hero-img {
+    max-width: 820px;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .hero-img img { width: 100%; display: block; }
+
+  /* --- OVERVIEW --- */
+  .overview {
+    max-width: 720px;
+    margin: 2.5rem auto 4rem;
+    padding: 1.8rem 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 16px;
+  }
+  .overview p { margin-bottom: 0.7rem; font-size: 0.93rem; }
+  .overview p:last-child { margin-bottom: 0; }
+  .overview strong { color: var(--text); }
+  .overview .label {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--text);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 50px;
+    margin-right: 6px;
+  }
+
+  /* --- CONTENT --- */
+  .content {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 1.5rem 5rem;
+  }
+
+  /* --- SECTION --- */
+  section { margin-bottom: 5rem; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.8rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: var(--text);
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  section h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 2.2rem 0 0.8rem;
+  }
+  h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 1.2rem 0 0.6rem;
+  }
+
+  p { margin-bottom: 0.9rem; }
+
+  /* --- ILLUSTRATION --- */
+  .illustration {
+    margin: 1.8rem 0;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .illustration img { width: 100%; display: block; }
+  .illustration .caption {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  /* --- TABLE --- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.88rem;
+  }
+  thead { background: var(--surface-2); }
+  th {
+    text-align: left;
+    padding: 0.7rem 0.9rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-dark);
+    font-size: 0.82rem;
+  }
+  td {
+    padding: 0.6rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  /* --- CODE --- */
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.3rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    position: relative;
+  }
+  pre::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    font-family: 'SF Mono', 'Menlo', monospace;
+    opacity: 0.5;
+  }
+  code {
+    font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+    font-size: 0.84rem;
+    line-height: 1.7;
+  }
+  p code, li code, td code {
+    background: var(--surface-2);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    color: var(--text);
+  }
+
+  /* syntax */
+  .kw { color: #7c3aed; }
+  .fn { color: #2563eb; }
+  .str { color: #059669; }
+  .cm { color: #9ca3af; font-style: italic; }
+  .num { color: #d97706; }
+  .op { color: #6b7280; }
+
+  /* --- METHOD CARDS --- */
+  .method-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin: 1.2rem 0;
+  }
+  .method-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.3rem;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .method-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 50px;
+    margin-bottom: 0.6rem;
+  }
+  .tag.best { background: var(--accent); color: var(--text); }
+  .tag.good { background: var(--surface-2); color: var(--text); }
+  .tag.api { background: var(--accent-2); color: #fff; }
+  .tag.visual { background: var(--warn); color: var(--text); }
+  .tag.film { background: var(--danger); color: #fff; }
+  .method-card h4 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+  .method-card p { font-size: 0.85rem; color: var(--text-dim); margin: 0; line-height: 1.6; }
+
+  /* --- BLOCKQUOTE --- */
+  blockquote {
+    background: var(--surface);
+    border-left: 3px solid var(--warn);
+    border-radius: 0 12px 12px 0;
+    padding: 1rem 1.3rem;
+    margin: 1rem 0;
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* --- TIP / WARNING --- */
+  .tip, .warning {
+    border-radius: 14px;
+    padding: 1rem 1.3rem;
+    margin: 1.2rem 0;
+    font-size: 0.88rem;
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+  }
+  .tip {
+    background: rgba(142, 212, 98, 0.12);
+    border: 1px solid rgba(142, 212, 98, 0.35);
+  }
+  .warning {
+    background: rgba(255, 112, 93, 0.08);
+    border: 1px solid rgba(255, 112, 93, 0.3);
+  }
+  .tip .icon, .warning .icon { font-size: 1.1rem; flex-shrink: 0; line-height: 1.6; }
+
+  /* --- STEPS --- */
+  .steps {
+    counter-reset: step;
+    margin: 1.2rem 0;
+    padding-left: 0;
+    list-style: none;
+  }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding: 0.6rem 0 0.6rem 3.2rem;
+    border-left: 2px solid var(--border);
+    margin-left: 0.9rem;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: -13px;
+    top: 0.5rem;
+    width: 26px;
+    height: 26px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .steps li:last-child { border-left-color: transparent; }
+
+  ul { padding-left: 1.3rem; margin: 0.6rem 0 1rem; }
+  li { margin-bottom: 0.4rem; font-size: 0.93rem; }
+
+  /* --- COST --- */
+  .cost-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    margin: 1.2rem 0;
+  }
+  .cost-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.2rem;
+    text-align: center;
+  }
+  .cost-card .tier { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+  .cost-card .price { font-size: 1.6rem; font-weight: 700; line-height: 1.2; }
+  .cost-card .unit { font-size: 0.75rem; color: var(--text-dim); }
+  .cost-card:nth-child(1) { border-color: var(--accent); }
+  .cost-card:nth-child(1) .tier, .cost-card:nth-child(1) .price { color: #4d8c2a; }
+  .cost-card:nth-child(2) { border-color: var(--warn); }
+  .cost-card:nth-child(2) .tier, .cost-card:nth-child(2) .price { color: #b36d00; }
+  .cost-card:nth-child(3) { border-color: var(--danger); }
+  .cost-card:nth-child(3) .tier, .cost-card:nth-child(3) .price { color: var(--danger); }
+
+  /* --- SOURCES --- */
+  .sources {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.8rem;
+  }
+  .sources a { color: var(--accent-2); text-decoration: none; font-size: 0.86rem; }
+  .sources a:hover { text-decoration: underline; }
+  .sources li { margin-bottom: 0.35rem; }
+  .sources h4 { color: var(--text); margin-top: 0; }
+
+  /* --- FOOTER --- */
+  footer {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 640px) {
+    .hero { padding: 3rem 1.2rem 1.5rem; }
+    .content { padding: 0 1.2rem 3rem; }
+    .overview { margin: 1.5rem 1rem 2.5rem; padding: 1.3rem; }
+    .method-grid { grid-template-columns: 1fr; }
+    .cost-grid { grid-template-columns: 1fr; }
+    pre { padding: 0.9rem; }
+    code { font-size: 0.78rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="pl-home-btn" href="../">
+  <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+  ProtoLearn
+</a>
+
+<nav>
+  <div class="inner">
+    <a href="#" class="logo">Storyboard AI</a>
+    <a href="#api">API 架構</a>
+    <a href="#code">程式碼</a>
+    <a href="#consistency">角色一致性</a>
+    <a href="#structure">分鏡結構</a>
+    <a href="#style">風格技巧</a>
+    <a href="#params">參數成本</a>
+    <a href="#warnings">注意事項</a>
+    <a href="#sources">來源</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <h1>GPT-Image-2 API<br>Storyboard 完整教學</h1>
+  <p class="subtitle">用 OpenAI 最新的圖像生成 API 自動產出分鏡圖——從角色設定、多輪生成到風格一致性，一次搞定。</p>
+  <div class="hero-img">
+    <img src="images/hero.png" alt="AI Storyboard 概念圖">
+  </div>
+</header>
+
+<div class="overview">
+  <p><span class="label">核心挑戰</span>用 AI 連續生成多格分鏡時，<strong>角色一致性</strong>是最大難題。</p>
+  <p><span class="label">解法</span>用 Responses API 的 <code>previous_response_id</code> 串接多輪生成，搭配<strong>角色設定圖</strong>讓每一格的角色長得一樣。</p>
+  <p><span class="label">策略</span>先 <code>quality="low"</code> 快速迭代構圖，確定後再 <code>quality="high"</code> 出最終版。</p>
+</div>
+
+<div class="content">
+
+  <!-- 1 -->
+  <section id="api">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>API 架構總覽</h2>
+    </div>
+    <p>OpenAI 有兩條生圖路徑，做 Storyboard 強烈建議用 <strong>Responses API</strong>：</p>
+    <table>
+      <thead><tr><th>路徑</th><th>端點</th><th>適合場景</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Image API</strong></td><td><code>images.generate</code> / <code>images.edit</code></td><td>單張生成、簡單編輯</td></tr>
+        <tr><td><strong>Responses API</strong></td><td><code>responses.create</code> + <code>tools</code></td><td>Storyboard 首選——多輪對話、自動記角色</td></tr>
+      </tbody>
+    </table>
+    <h3>模型選擇</h3>
+    <table>
+      <thead><tr><th>模型</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>gpt-image-2</code>（最新）</td><td>最終出圖，文字渲染最強</td></tr>
+        <tr><td><code>gpt-image-1-mini</code></td><td>便宜快速，適合草稿</td></tr>
+      </tbody>
+    </table>
+    <div class="illustration">
+      <img src="images/workflow.png" alt="Storyboard 工作流">
+      <div class="caption">核心流程：角色設定圖 → API 多輪生成 → 分鏡圖輸出</div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section id="code">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>程式碼範例</h2>
+    </div>
+
+    <h3>單張生成（Image API）</h3>
+    <pre data-lang="python"><code><span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+<span class="kw">import</span> base64
+
+client <span class="op">=</span> OpenAI()
+
+result <span class="op">=</span> client.images.<span class="fn">generate</span>(
+    model<span class="op">=</span><span class="str">"gpt-image-2"</span>,
+    prompt<span class="op">=</span><span class="str">"A veterinarian with a baby otter, children's book style"</span>,
+    size<span class="op">=</span><span class="str">"1024x1024"</span>,
+    quality<span class="op">=</span><span class="str">"high"</span>
+)
+
+image_bytes <span class="op">=</span> base64.<span class="fn">b64decode</span>(result.data[<span class="num">0</span>].b64_json)
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"output.png"</span>, <span class="str">"wb"</span>) <span class="kw">as</span> f:
+    f.<span class="fn">write</span>(image_bytes)</code></pre>
+
+    <h3>多輪生成（Responses API）—— Storyboard 最佳方案</h3>
+    <pre data-lang="python"><code><span class="cm"># 第一輪：生成角色設定圖</span>
+response1 <span class="op">=</span> client.responses.<span class="fn">create</span>(
+    model<span class="op">=</span><span class="str">"gpt-5.5"</span>,
+    input<span class="op">=</span><span class="str">"Generate a character reference sheet: front, side,
+    back views of a young cyberpunk hacker with neon pink
+    bob hair. White background, concept art style."</span>,
+    tools<span class="op">=</span>[{<span class="str">"type"</span>: <span class="str">"image_generation"</span>}],
+)
+
+<span class="cm"># 第二輪：用 previous_response_id 保持角色一致</span>
+response2 <span class="op">=</span> client.responses.<span class="fn">create</span>(
+    model<span class="op">=</span><span class="str">"gpt-5.5"</span>,
+    previous_response_id<span class="op">=</span>response1.id,
+    input<span class="op">=</span><span class="str">"Panel 1: The same character sits in a dark room
+    lit by monitors. Cinematic wide shot, cyberpunk noir."</span>,
+    tools<span class="op">=</span>[{<span class="str">"type"</span>: <span class="str">"image_generation"</span>}],
+)
+
+<span class="cm"># 第三輪：繼續下一格</span>
+response3 <span class="op">=</span> client.responses.<span class="fn">create</span>(
+    model<span class="op">=</span><span class="str">"gpt-5.5"</span>,
+    previous_response_id<span class="op">=</span>response2.id,
+    input<span class="op">=</span><span class="str">"Panel 2: Close-up of her face. She notices
+    something alarming. Same character, same outfit."</span>,
+    tools<span class="op">=</span>[{<span class="str">"type"</span>: <span class="str">"image_generation"</span>}],
+)
+
+<span class="cm"># 提取所有圖片</span>
+<span class="kw">for</span> i, resp <span class="kw">in</span> <span class="fn">enumerate</span>([response1, response2, response3]):
+    <span class="kw">for</span> output <span class="kw">in</span> resp.output:
+        <span class="kw">if</span> output.type <span class="op">==</span> <span class="str">"image_generation_call"</span>:
+            img <span class="op">=</span> base64.<span class="fn">b64decode</span>(output.result)
+            <span class="kw">with</span> <span class="fn">open</span>(<span class="str">f"panel_</span>{i}<span class="str">.png"</span>, <span class="str">"wb"</span>) <span class="kw">as</span> f:
+                f.<span class="fn">write</span>(img)</code></pre>
+
+    <h3>上傳參考圖合成</h3>
+    <pre data-lang="python"><code><span class="kw">def</span> <span class="fn">upload</span>(path):
+    <span class="kw">with</span> <span class="fn">open</span>(path, <span class="str">"rb"</span>) <span class="kw">as</span> f:
+        <span class="kw">return</span> client.files.<span class="fn">create</span>(file<span class="op">=</span>f, purpose<span class="op">=</span><span class="str">"vision"</span>).id
+
+char_id <span class="op">=</span> <span class="fn">upload</span>(<span class="str">"character_sheet.png"</span>)
+bg_id <span class="op">=</span> <span class="fn">upload</span>(<span class="str">"background_ref.png"</span>)
+
+response <span class="op">=</span> client.responses.<span class="fn">create</span>(
+    model<span class="op">=</span><span class="str">"gpt-5.5"</span>,
+    input<span class="op">=</span>[{
+        <span class="str">"role"</span>: <span class="str">"user"</span>,
+        <span class="str">"content"</span>: [
+            {<span class="str">"type"</span>: <span class="str">"input_text"</span>,
+             <span class="str">"text"</span>: <span class="str">"Create a storyboard panel: the character
+              walks through this environment. Maintain exact
+              design."</span>},
+            {<span class="str">"type"</span>: <span class="str">"input_image"</span>, <span class="str">"file_id"</span>: char_id},
+            {<span class="str">"type"</span>: <span class="str">"input_image"</span>, <span class="str">"file_id"</span>: bg_id}
+        ],
+    }],
+    tools<span class="op">=</span>[{<span class="str">"type"</span>: <span class="str">"image_generation"</span>}],
+)</code></pre>
+  </section>
+
+  <!-- 3 -->
+  <section id="consistency">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>角色一致性——五大方法</h2>
+    </div>
+    <p>這是 Storyboard 最大的挑戰。以下五種方法可以組合使用：</p>
+
+    <div class="illustration">
+      <img src="images/character-sheet.png" alt="角色設定圖範例">
+      <div class="caption">方法 A 範例：角色設定圖（前視 / 側視 / 背視 + 色票）</div>
+    </div>
+
+    <div class="method-grid">
+      <div class="method-card">
+        <span class="tag best">最可靠</span>
+        <h4>A. 角色設定圖</h4>
+        <p>先生成多角度設定圖，後續每一幀都上傳作為參考。</p>
+      </div>
+      <div class="method-card">
+        <span class="tag good">輔助強化</span>
+        <h4>B. Preservation Statements</h4>
+        <p>每次 prompt 重複外貌描述 + 寫 "Do not redesign the character"。</p>
+      </div>
+      <div class="method-card">
+        <span class="tag api">API 層級</span>
+        <h4>C. Multi-Turn API</h4>
+        <p>用 <code>previous_response_id</code> 串接，讓模型記住前面的角色。</p>
+      </div>
+      <div class="method-card">
+        <span class="tag visual">設計技巧</span>
+        <h4>D. Visual Markers</h4>
+        <p>獨特配件、特殊髮色、顯眼服裝，每次 prompt 都要提及。</p>
+      </div>
+      <div class="method-card">
+        <span class="tag film">電影技巧</span>
+        <h4>E. Establishing Shot</h4>
+        <p>從中景建立角色（不要廣角），所有子鏡頭都回到這張為參考。</p>
+      </div>
+    </div>
+
+    <h3>Prompt 範例：角色設定圖</h3>
+    <blockquote>
+      "Character model sheet: a young female cyberpunk hacker with neon pink bob hair, wearing an oversized glowing tech-jacket. Show three-view drawings (front, side, back), facial expression variations, detailed clothing breakdown, and color palette. White background, professional concept art."
+    </blockquote>
+
+    <div class="tip">
+      <span class="icon">&#x1f4a1;</span>
+      <div><strong>組合技巧：</strong>同時使用 A + B + C 效果最好——上傳角色設定圖、用 multi-turn 串接、並重複關鍵外貌描述。</div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section id="structure">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>分鏡結構</h2>
+    </div>
+
+    <div class="illustration">
+      <img src="images/grid-vs-individual.png" alt="Grid vs 逐格生成">
+      <div class="caption">方式 A（單張多格 Grid）vs 方式 B（逐格生成）</div>
+    </div>
+
+    <h3>方式 A：單張多格 Grid</h3>
+    <p>一次生成整頁分鏡板，適合快速 pre-visualization。缺點是單格解析度低。</p>
+    <blockquote>
+      "Create a 6-panel film storyboard in a 3x2 grid layout. Each panel has a white margin border and info strip underneath. Scene: [場景]. Style: pencil sketch storyboard, cinematic framing."
+    </blockquote>
+
+    <h3>方式 B：逐格生成（高品質）</h3>
+    <p>每格單獨生成，用 Responses API 串接，品質最高：</p>
+    <pre data-lang="prompt"><code>Panel 1: Wide establishing shot — 角色進入暗巷
+Panel 2: Medium shot — 角色注意到牆上的東西
+Panel 3: Close-up — 角色震驚的表情
+Panel 4: Over-the-shoulder — 揭示他看到了什麼</code></pre>
+
+    <div class="illustration">
+      <img src="images/storyboard-panels.png" alt="四格分鏡範例">
+      <div class="caption">逐格生成範例：從全景到特寫的電影式分鏡序列</div>
+    </div>
+
+    <h3>方式 C：Storyboard → 影片完整工作流</h3>
+    <p>來自 Tao Prompts（47K views）的端到端流程：</p>
+    <ol class="steps">
+      <li>上傳角色參考圖 → 一句話讓 GPT Image 2 生成完整 12 格 storyboard</li>
+      <li>另外生成角色設定圖（character reference sheet）</li>
+      <li>裁切 storyboard（每 4 格一行）</li>
+      <li>每行轉影片：上傳裁切行 + 角色設定圖 → 搭配影片生成工具</li>
+      <li>轉場處理：用上一段影片的<strong>最後一幀</strong>作為下一段起始參考</li>
+      <li>延伸故事：上傳第一頁 + 設定圖 → prompt「接下來 12 格」</li>
+    </ol>
+  </section>
+
+  <!-- 5 -->
+  <section id="style">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2>風格一致性技巧</h2>
+    </div>
+    <div class="method-grid">
+      <div class="method-card">
+        <h4>分離可變與不可變</h4>
+        <p>"Change only the character's pose. Keep everything else the same — style, palette, background, lighting."</p>
+      </div>
+      <div class="method-card">
+        <h4>用具體風格詞</h4>
+        <p>&#x2705; "film grain, warm golden hour lighting, 35mm lens"<br>&#x274c; "beautiful cinematic"</p>
+      </div>
+      <div class="method-card">
+        <h4>指定畫面構成</h4>
+        <p>明確寫 framing、perspective、lighting，不要讓模型自己決定。</p>
+      </div>
+      <div class="method-card">
+        <h4>先低後高品質</h4>
+        <p>用 <code>quality="low"</code> 做 10-20 張草稿，滿意後用 <code>quality="high"</code> 出正式版。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section id="params">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2>重要參數與成本</h2>
+    </div>
+    <table>
+      <thead><tr><th>參數</th><th>Storyboard 建議值</th></tr></thead>
+      <tbody>
+        <tr><td><code>size</code></td><td><code>1536x1024</code>（16:9）或 <code>2048x2048</code>（多格 grid）</td></tr>
+        <tr><td><code>quality</code></td><td>草稿 <code>low</code>，最終 <code>high</code></td></tr>
+        <tr><td><code>n</code></td><td><code>4</code>，選最好的一張</td></tr>
+        <tr><td><code>moderation</code></td><td><code>low</code>（較少限制）</td></tr>
+      </tbody>
+    </table>
+
+    <h3>每張成本（gpt-image-2, 1024x1024）</h3>
+    <div class="cost-grid">
+      <div class="cost-card">
+        <div class="tier">Low</div>
+        <div class="price">$0.006</div>
+        <div class="unit">/ 張</div>
+      </div>
+      <div class="cost-card">
+        <div class="tier">Medium</div>
+        <div class="price">$0.053</div>
+        <div class="unit">/ 張</div>
+      </div>
+      <div class="cost-card">
+        <div class="tier">High</div>
+        <div class="price">$0.211</div>
+        <div class="unit">/ 張</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <span class="icon">&#x1f4b0;</span>
+      <div><strong>省錢策略：</strong>Low 品質做 20 張草稿（$0.12）→ 挑 4 張用 High 出正式版（$0.84）→ 不到 $1 就有一套高品質分鏡。</div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section id="warnings">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <h2>注意事項與限制</h2>
+    </div>
+    <div class="warning">
+      <span class="icon">&#x26a0;&#xfe0f;</span>
+      <div>
+        <ul style="padding-left: 1rem;">
+          <li><strong>gpt-image-2 不支援透明背景</strong>——需用 gpt-image-1.5</li>
+          <li><strong>沒有 <code>input_fidelity</code> 參數</strong>——傳了會報錯</li>
+          <li><strong>Multi-turn 需要 <code>store=True</code></strong>（預設值），設 False 無法引用前面的圖</li>
+          <li><strong>廣角鏡頭臉部會失真</strong>——永遠從中景開始建立角色</li>
+          <li><strong>多格 storyboard 偶爾重複 panel</strong>——用 edit 功能修正</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section id="sources">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <h2>參考來源</h2>
+    </div>
+    <div class="sources">
+      <h4>文章 / 文件</h4>
+      <ul>
+        <li><a href="https://developers.openai.com/api/docs/guides/image-generation" target="_blank">OpenAI Image Generation API Guide</a></li>
+        <li><a href="https://developers.openai.com/cookbook/examples/multimodal/image-gen-models-prompting-guide" target="_blank">GPT Image Generation Prompting Guide (Official Cookbook)</a></li>
+        <li><a href="https://www.atlascloud.ai/blog/guides/seedance-2-gpt-image-2-api-tutorial" target="_blank">Atlas Cloud: Seedance 2.0 + GPT Image 2 Tutorial</a></li>
+        <li><a href="https://ai-flow.net/blog/consistent-character-generation-workflow-gpt-image/" target="_blank">AI-Flow: Consistent Character Generation Workflow</a></li>
+        <li><a href="https://github.com/Anil-matcha/Awesome-GPT-Image-2-API-Prompts" target="_blank">Awesome GPT-Image-2 API Prompts (GitHub)</a></li>
+      </ul>
+      <h4 style="margin-top: 1.2rem;">YouTube 影片</h4>
+      <ul>
+        <li><a href="https://youtube.com/watch?v=KxRR8uiex_s" target="_blank">Tao Prompts: Create Seamless AI Films of ANY Length</a>（47K views）</li>
+        <li><a href="https://youtube.com/watch?v=nolvu7bkuJk" target="_blank">fal: GPT Image 2 is NEXT LEVEL</a>（4K views）</li>
+        <li><a href="https://youtube.com/watch?v=G01kghX152g" target="_blank">AI Samson: This One Prompt Fixes AI Character Consistency</a>（223K views）</li>
+        <li><a href="https://youtube.com/watch?v=ZdMWTHMS6vQ" target="_blank">AI Madame: GPT Image 2 + Multiple Characters</a>（7.7K views）</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  GPT-Image-2 API Storyboard 教學 · 2026-05-14 · Design: MindMarket Style
+</footer>
+
+</body>
+</html>
