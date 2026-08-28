@@ -73,7 +73,6 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 40px;
-    max-width: 640px;
   }
 
   /* Project card */
@@ -143,13 +142,11 @@
     color: var(--text);
   }
 
-  /* Responsive — 作品多了之後改回雙欄 */
-  /* @media (min-width: 800px) {
+  @media (min-width: 800px) {
     .project-grid {
       grid-template-columns: 1fr 1fr;
-      max-width: none;
     }
-  } */
+  }
 
   @media (max-width: 600px) {
     .page { padding: 48px 20px 80px; }
@@ -178,6 +175,16 @@
       <div class="info">
         <span class="title">GPT-Image-2 Storyboard 教學</span>
         <span class="meta">Tutorial · 2026</span>
+      </div>
+    </a>
+
+    <a class="project-card" href="pi-zero-vla/">
+      <div class="thumb">
+        <img src="pi-zero-vla/thumbnail.png" alt="Physical Intelligence 技術簡報">
+      </div>
+      <div class="info">
+        <span class="title">Physical Intelligence 技術簡報</span>
+        <span class="meta">Reference · 2026</span>
       </div>
     </a>
 

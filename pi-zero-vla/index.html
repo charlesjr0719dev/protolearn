@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physical Intelligence 技術簡報</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap">
+  <style>
+    :root {
+      --accent: #2B7A78;
+      --accent-soft: #d0e8e7;
+      --amber: #D4872E;
+      --amber-bg: #FFF6EC;
+      --amber-border: #E8C9A0;
+      --surface: #FAFAF8;
+      --surface-card: #FFFFFF;
+      --text: #1A2332;
+      --text-secondary: #5F6B7A;
+      --text-tertiary: #8C95A1;
+      --border: #E2E5E9;
+      --code-bg: #F0F2F4;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --accent: #3AAFA9;
+        --accent-soft: #1a3a3a;
+        --amber: #E8A84C;
+        --amber-bg: #2A2318;
+        --amber-border: #5C4A2E;
+        --surface: #0F1418;
+        --surface-card: #1A1F26;
+        --text: #E2E6EB;
+        --text-secondary: #9CA3AF;
+        --text-tertiary: #6B7280;
+        --border: #2D333B;
+        --code-bg: #242930;
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--surface);
+      color: var(--text);
+      font-family: 'Noto Sans TC', -apple-system, 'PingFang TC', sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    .header {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header h1 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      line-height: 1.4;
+      color: var(--text);
+      text-wrap: balance;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-sub {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .header-meta {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+    }
+
+    section { margin-bottom: 2.5rem; }
+
+    h2 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent);
+      display: inline-block;
+    }
+
+    h3 {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p { margin-bottom: 1rem; color: var(--text); }
+    p + p { margin-top: 0; }
+
+    a { color: var(--accent); }
+
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem;
+      background: var(--accent-soft);
+      border-radius: 0 6px 6px 0;
+      margin: 1.5rem 0;
+    }
+    .callout p { margin-bottom: 0; }
+    .callout-amber {
+      border-left-color: var(--amber);
+      background: var(--amber-bg);
+    }
+    .callout-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+    .callout-amber .callout-label { color: var(--amber); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .stat {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1rem;
+      text-align: center;
+    }
+    .stat-value {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+      line-height: 1.4;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th {
+      background: var(--accent-soft);
+      font-weight: 700;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    td.row-label {
+      background: var(--code-bg);
+      font-weight: 500;
+    }
+
+    .check-list {
+      list-style: none;
+      margin: 1rem 0;
+    }
+    .check-list li {
+      padding: 0.4rem 0 0.4rem 1.75rem;
+      position: relative;
+      color: var(--text);
+    }
+    .check-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.65rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 3px;
+      font-size: 0.88em;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+
+    strong { font-weight: 700; }
+
+    /* ProtoLearn 返回首頁浮動按鈕 */
+    .pl-home-btn {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 9999;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #fff;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      text-decoration: none;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: background 0.2s ease, transform 0.2s ease;
+      opacity: 0.75;
+    }
+    .pl-home-btn:hover {
+      background: rgba(0,0,0,0.65);
+      opacity: 1;
+      transform: translateX(-2px);
+    }
+    .pl-home-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @media (max-width: 600px) {
+      .page { padding: 2rem 1rem 3rem; }
+      .header h1 { font-size: 1.4rem; }
+      .stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<a class="pl-home-btn" href="../">
+  <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+  ProtoLearn
+</a>
+
+<div class="page">
+
+  <header class="header">
+    <h1>Physical Intelligence：<br>一套 AI 操控所有機械手臂</h1>
+    <div class="header-sub">
+      這家公司不造手臂，只做「讓手臂變聰明」的 AI 大腦。<br>
+      一套模型，操控不同廠牌的機器人，完成折衣服、收餐桌、裝紙箱等精細任務。
+    </div>
+    <div class="header-meta">2026-08-28 整理</div>
+  </header>
+
+  <section>
+    <h2>這家公司在做什麼</h2>
+    <p>Physical Intelligence（簡稱 PI）2024 年在舊金山成立，目標是打造一套<strong>通用的機器人 AI 模型</strong>——讓同一套軟體能操控不同廠牌、不同構型的機械手臂，完成真實世界的精細操作。</p>
+    <p>他們的定位很明確：<strong>不做硬體，只做軟體智能層</strong>。不管你的手臂是哪家做的、幾軸、什麼構型，裝上他們的模型就能「變聰明」。</p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value">$11B+</div>
+        <div class="stat-label">最新估值<br>（美金）</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">$1B+</div>
+        <div class="stat-label">累計募資</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">68+</div>
+        <div class="stat-label">單一模型<br>可做的任務數</div>
+      </div>
+    </div>
+    <p style="font-size:0.85rem; color:var(--text-secondary);">
+      投資人包括 Jeff Bezos、NVIDIA、Sequoia、Google CapitalG、OpenAI。
+    </p>
+  </section>
+
+  <section>
+    <h2>核心概念：VLA 模型</h2>
+    <p>PI 的技術核心是一種叫做 <strong>VLA</strong>（Vision-Language-Action）的 AI 模型架構。用一個類比來說：</p>
+
+    <div class="callout">
+      <p><strong>傳統做法</strong>像是僱三個人：一個負責「看」（影像辨識）、一個負責「聽懂指令」（語言處理）、一個負責「動手」（動作控制）。三個人各做各的，中間靠工程師寫好的規則串起來。</p>
+      <p style="margin-top:0.75rem;"><strong>VLA 模型</strong>是一個人同時會看、會聽、會動手。你說「把碗放進洗碗機」，它自己看到碗在哪、理解指令、規劃手臂動作，一氣呵成。</p>
+    </div>
+
+    <p>PI 基於這個概念，在 2024 年 10 月推出了他們的第一個模型，叫做 <strong>pi-zero</strong>。</p>
+
+    <h3>pi-zero 怎麼運作</h3>
+    <ul class="check-list">
+      <li><strong>輸入</strong>：攝影機畫面 + 一句自然語言指令（例如「折這條毛巾」）</li>
+      <li><strong>輸出</strong>：直接產生馬達控制指令（50Hz，每秒 50 個動作指令）</li>
+      <li><strong>規模</strong>：30 億參數，在 10,000+ 小時的真實機器人操作資料上訓練</li>
+      <li><strong>通用性</strong>：同一個模型在 7 種不同機器人硬體上都能用，不用針對每台重新訓練</li>
+    </ul>
+
+    <h3>從 pi-zero 到 pi-0.7：持續進化</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>版本</th><th>時間</th><th>能力</th></tr>
+        <tr><td>pi-zero</td><td>2024/10</td><td>折衣服、收餐桌、組紙箱、裝袋、放雞蛋——同一個模型完成</td></tr>
+        <tr><td>pi-0.5</td><td>2025/04</td><td>在從沒見過的新環境（陌生的家）也能工作，能自己拆解多步驟任務</td></tr>
+        <tr><td>pi-0.7</td><td>2026/04</td><td>只看過兩次的家電也能操作（結合訓練片段和網路知識推理）</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>「寫程式控制」vs「讓機器人學」</h2>
+    <p>要理解 PI 做的事為什麼重要，先看目前機械手臂怎麼工作的。</p>
+
+    <h3>傳統架構長什麼樣</h3>
+    <p>一支機械手臂從你下指令到馬達真的轉，中間經過好幾層。由上往下，大致分成四層：</p>
+    <ul class="check-list">
+      <li><strong>應用層</strong>：決定手臂「要做什麼事」。比如「先去 A 點取件、放到 B 點、偵測到異常就停下來」。這一層就是產品本身，沒有現成的東西可以套用</li>
+      <li><strong>軌跡規劃</strong>：你給它一個目標位置，它自動算出關節該怎麼走、保證不會撞到自己或環境裡的東西。這一層有成熟的開源工具（例如 MoveIt），不需要自己寫</li>
+      <li><strong>控制器</strong>：把規劃好的整條軌跡，切成每十毫秒一個關節目標值，即時送給馬達執行，同時監控有沒有偏離</li>
+      <li><strong>馬達與硬體</strong>：真正在轉的東西</li>
+    </ul>
+    <p>這裡面，<strong>軌跡規劃器做了很多事是自動的</strong>：逆運動學（目標位置反推關節角度）、路徑搜索（怎麼從 A 到 B）、碰撞檢查（不會撞到桌子或自己的手臂）、時間參數化（不超過關節速度上限）。它靠一份描述檔知道手臂長什麼樣，靠場景模型知道周圍有什麼障礙物。</p>
+    <p>物件位置變了？更新場景模型裡的障礙物座標，規劃器自動重算路徑——<strong>這一層不需要重新寫程式</strong>。</p>
+    <p>那什麼才需要人改？<strong>最上面的應用層</strong>。「這個物件從哪個角度抓」「到位後要不要翻轉」「出錯了怎麼處理」「什麼情況要停下來通報」——這些決策邏輯，每換一個產品場景就可能要調整，因為它代表的是「這台機器的任務是什麼」。</p>
+
+    <h3>PI 改了哪一層</h3>
+    <p>PI 做的事，就是把最上面的應用層——從人寫的程式，換成從大量操作資料中學出來的 AI 模型。底下的軌跡規劃、控制器、硬體完全不動。</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th></th><th>傳統路線</th><th>學習路線（PI 的做法）</th></tr>
+        <tr>
+          <td class="row-label"><strong>應用層是什麼</strong></td>
+          <td>工程師寫的程式（任務流程、判斷規則、例外處理）</td>
+          <td>AI 模型（從操作資料學出判斷邏輯）</td>
+        </tr>
+        <tr>
+          <td class="row-label"><strong>輸入</strong></td>
+          <td>感測器資料（攝影機、力感測器等）</td>
+          <td>感測器資料 <strong>+ 自然語言指令</strong>（「把碗放進去」）</td>
+        </tr>
+        <tr>
+          <td class="row-label"><strong>輸出</strong></td>
+          <td>告訴軌跡規劃「移動到這個位置」</td>
+          <td>一樣——告訴軌跡規劃「移動到這個位置」</td>
+        </tr>
+        <tr>
+          <td class="row-label"><strong>路徑規劃與避障</strong></td>
+          <td>規劃器自動處理（更新場景即可、不用改程式）</td>
+          <td>一樣——底下的規劃器不動</td>
+        </tr>
+        <tr>
+          <td class="row-label"><strong>想多做一種事</strong></td>
+          <td>工程師要再寫一組應用層邏輯（抓取策略、流程、例外處理）</td>
+          <td>餵更多操作資料給模型，讓它自己學</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="callout">
+      <p><strong>一句話版本</strong>：VLA 不是換掉整個架構，只是把應用層從「人寫的程式」換成「學出來的 AI 模型」，並且多了一個輸入：用自然語言告訴它「目的是什麼」。底下的軌跡規劃和控制器完全不動。</p>
+    </div>
+
+    <h3>核心取捨：可預測性 vs 彈性</h3>
+    <ul class="check-list">
+      <li><strong>人寫的應用程式</strong>百分之百照你的想法做，不會有意外——但它只能處理你事先想得到的情境</li>
+      <li><strong>AI 模型</strong>能處理複雜到難以用規則描述的反應和動作——但它的判斷有變動風險，你無法保證每次都做出一模一樣的事</li>
+    </ul>
+    <p>所以判斷只需要一個問題：<strong>你要做的事，能不能用寫死的規則完整描述？</strong></p>
+    <p>能 → 自己寫程式，百分之百可預測。不能 → 讓 AI 來，換取處理未知情境的彈性。</p>
+
+    <div class="callout-amber callout">
+      <div class="callout-label">「寫死的規則」比想像中容易碰壁</div>
+      <p>即使在看似固定的工業環境，實際的變異也可能超出規則能處理的範圍。舉例：光學檢測電路板上的焊墊位置時，不同客戶的板子、不同機臺的拍攝條件、影像品質的差異，都會產生規則沒預料到的情況——缺陷區域、照度不均、邊緣模糊——讓事先寫好的演算法判斷出錯。</p>
+      <p style="margin-top:0.75rem;">這類「看起來是固定流程，但實際執行時有太多無法預見的變異」的場景，正是 AI 可以補上的缺口。<strong>關鍵是應用層的決策邏輯裡，有多少無法預見的變異</strong>。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>VLA 跟現有的機械手臂架構怎麼整合</h2>
+    <p>大多數機械手臂的控制架構分成三層。加入 VLA 之後，改變的只有最上面那層——底下兩層完全不動：</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>層級</th><th>傳統架構</th><th>加入 VLA 後</th></tr>
+        <tr>
+          <td class="row-label"><strong>任務決策</strong><br><span style="font-size:0.8rem; color:var(--text-secondary);">決定「要做什麼」</span></td>
+          <td>人工操作或應用程式<br><span style="font-size:0.8rem; color:var(--text-secondary);">工程師寫好規則，或操作員手動指定</span></td>
+          <td><strong style="color:var(--accent);">VLA 模型</strong><br><span style="font-size:0.8rem; color:var(--text-secondary);">看到環境、理解語言指令、自己決定動作</span></td>
+        </tr>
+        <tr>
+          <td class="row-label"><strong>軌跡規劃</strong><br><span style="font-size:0.8rem; color:var(--text-secondary);">算出「怎麼移過去」</span></td>
+          <td>運動規劃軟體（如 MoveIt）<br><span style="font-size:0.8rem; color:var(--text-secondary);">避障、關節限制、平滑路徑</span></td>
+          <td>不變</td>
+        </tr>
+        <tr>
+          <td class="row-label"><strong>馬達控制</strong><br><span style="font-size:0.8rem; color:var(--text-secondary);">讓馬達「照做」</span></td>
+          <td>控制器<br><span style="font-size:0.8rem; color:var(--text-secondary);">即時控制、力矩輸出</span></td>
+          <td>不變</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="callout">
+      <p>重點是：VLA 取代的是最上面的「任務決策層」，<strong>底下的軌跡規劃和控制器完全不需要改</strong>。已經建好的運動規劃架構不會白費——它會繼續負責精確的軌跡計算，VLA 只是在上面加一層能看、能聽、能判斷的大腦。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>背後的理論：元學習</h2>
+    <p>pi-zero 能「一套模型做所有事」，背後有一個關鍵的理論基礎，叫做<strong>元學習</strong>（Meta-Learning）——簡單說就是「學會怎麼學」。</p>
+    <p>這個概念來自 PI 共同創辦人 Chelsea Finn 在 2017 年發表的 <strong>MAML</strong>（Model-Agnostic Meta-Learning）演算法。核心想法是：</p>
+
+    <div class="callout">
+      <p>與其訓練模型擅長「一件事」，不如訓練它擅長「快速學會新的事」。</p>
+      <p style="margin-top:0.75rem;">類比：不是教你西班牙文，而是讓你先學會「怎麼學語言」——之後學義大利文、葡萄牙文都很快。</p>
+    </div>
+
+    <p>這就是為什麼 pi-zero 能在 7 種不同機器人上運作、做 68 種以上任務——它不是針對每個任務分別訓練，而是學會了一套「怎麼適應新任務」的通用能力。</p>
+  </section>
+
+  <section>
+    <h2>開源資源：openpi</h2>
+    <p>2025 年 2 月，PI 把模型權重用 Apache 2.0 授權開源，放在 GitHub 上叫 <code>openpi</code>。</p>
+
+    <ul class="check-list">
+      <li><strong>免費取用</strong>：任何人都可以下載模型權重，不用付授權費</li>
+      <li><strong>商用合法</strong>：Apache 2.0 允許商業使用</li>
+      <li><strong>可以微調</strong>：用自家手臂的操作資料再訓練，讓模型適應特定硬體</li>
+      <li><strong>社群活躍</strong>：GitHub 上持續更新，有完整文件和範例</li>
+    </ul>
+
+    <div class="callout-amber callout">
+      <div class="callout-label">實際門檻</div>
+      <p>開源不等於隨插即用。要跑起來需要：高階 GPU（訓練和微調用）、ROS 2 環境、攝影機整合、針對目標手臂的 URDF 模型和介面適配。具備現有的運動規劃架構是基礎前提。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>延伸資源</h2>
+    <ul class="check-list">
+      <li><strong>看 demo 影片</strong>：pi-zero 官方部落格有未剪接的完整操作影片（折衣服、收餐桌），直覺感受比文字有效<br><a href="https://physicalintelligence.company/blog/pi0" target="_blank" rel="noopener" style="font-size:0.85rem;">physicalintelligence.company/blog/pi0</a></li>
+      <li><strong>技術細節</strong>：openpi GitHub repo 有完整文件、範例程式碼和模型權重下載<br><a href="https://github.com/Physical-Intelligence/openpi" target="_blank" rel="noopener" style="font-size:0.85rem;">github.com/Physical-Intelligence/openpi</a></li>
+      <li><strong>研究背景</strong>：Chelsea Finn 在 BAIR Blog 寫的 "Learning to Learn" 是最好的元學習入門文章<br><a href="https://bair.berkeley.edu/blog/2017/07/18/learning-to-learn/" target="_blank" rel="noopener" style="font-size:0.85rem;">bair.berkeley.edu/blog/2017/07/18/learning-to-learn</a></li>
+      <li><strong>完整課程</strong>：Stanford CS330（Deep Multi-Task and Meta Learning）完整課程影片免費公開在 YouTube<br><a href="https://www.youtube.com/playlist?list=PLoROMvodv4rMIJ-TvblAIkw28Wxi27B36" target="_blank" rel="noopener" style="font-size:0.85rem;">YouTube: Stanford CS330 完整課程</a></li>
+    </ul>
+  </section>
+
+  <footer class="footer">
+    <p>資料來源：Physical Intelligence 官方部落格、pi-zero 論文、公開報導、openpi GitHub repo。</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
