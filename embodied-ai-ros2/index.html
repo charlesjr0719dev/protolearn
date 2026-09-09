@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM × ROS 2 — Embodied AI 指南</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f8f6f3;
+      --surface-2: #d9d7d5;
+      --border: #262626;
+      --text: #262626;
+      --text-dim: #727272;
+      --text-muted: #8f8e8d;
+      --accent: #ff9600;
+      --accent-bg: #fff3e0;
+      --dark-bg: #262626;
+      --dark-surface: #2d2d2d;
+      --dark-text: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', 'Noto Sans TC', -apple-system, 'PingFang TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Hero */
+    .hero {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+      padding: 120px 40px 100px;
+      text-align: center;
+    }
+
+    .hero-inner {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -1.44px;
+      line-height: 1.06;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 .accent {
+      color: var(--accent);
+    }
+
+    .hero .subtitle {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--surface-2);
+      line-height: 1.6;
+      max-width: 560px;
+      margin: 0 auto 32px;
+    }
+
+    .hero .meta-tags {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .hero .meta-tag {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 14px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Sections */
+    .section {
+      padding: 80px 40px;
+    }
+
+    .section-inner {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .section--surface { background: var(--surface); }
+    .section--dark { background: var(--dark-bg); color: var(--dark-text); }
+    .section--accent { background: var(--accent); color: var(--text); }
+
+    /* Section number */
+    .section-num {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .section--dark .section-num { color: rgba(255,255,255,0.4); }
+    .section--accent .section-num { color: rgba(38,38,38,0.5); }
+
+    .section h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.96px;
+      line-height: 1.1;
+      margin-bottom: 32px;
+    }
+
+    .section--accent h2 { color: var(--text); }
+
+    .section h3 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      line-height: 1.3;
+      margin: 40px 0 16px;
+    }
+
+    .section h3:first-of-type { margin-top: 0; }
+
+    .section p {
+      margin-bottom: 16px;
+      color: var(--text-dim);
+    }
+
+    .section--dark p { color: rgba(255,255,255,0.7); }
+    .section--accent p { color: rgba(38,38,38,0.75); }
+
+    /* Learning point box */
+    .learning-point {
+      background: var(--accent-bg);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .learning-point .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .learning-point p {
+      color: var(--text);
+      margin-bottom: 0;
+      font-size: 15px;
+    }
+
+    .section--dark .learning-point {
+      background: rgba(255,150,0,0.12);
+      border-left-color: var(--accent);
+    }
+
+    .section--dark .learning-point p { color: var(--dark-text); }
+
+    .section--accent .learning-point {
+      background: rgba(255,255,255,0.4);
+      border-left-color: var(--text);
+    }
+
+    .section--accent .learning-point .label { color: var(--text); }
+    .section--accent .learning-point p { color: var(--text); }
+
+    /* Self check */
+    .self-check {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 24px;
+      margin-top: 40px;
+    }
+
+    .self-check .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .self-check ol {
+      padding-left: 20px;
+      color: var(--text);
+    }
+
+    .self-check li {
+      margin-bottom: 8px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .section--dark .self-check {
+      background: var(--dark-surface);
+    }
+
+    .section--dark .self-check .label { color: rgba(255,255,255,0.4); }
+    .section--dark .self-check ol { color: var(--dark-text); }
+
+    .section--accent .self-check {
+      background: rgba(255,255,255,0.5);
+    }
+
+    /* Code blocks */
+    pre {
+      background: var(--dark-surface);
+      color: #e0e0e0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 16px 0 24px;
+    }
+
+    .section--dark pre {
+      background: #1a1a1a;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      background: var(--surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .section--dark code {
+      background: var(--dark-surface);
+      color: var(--dark-text);
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 16px 0 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--surface-2);
+      color: var(--text);
+      vertical-align: top;
+    }
+
+    .section--dark th {
+      color: rgba(255,255,255,0.4);
+      border-bottom-color: rgba(255,255,255,0.2);
+    }
+
+    .section--dark td {
+      color: var(--dark-text);
+      border-bottom-color: rgba(255,255,255,0.08);
+    }
+
+    /* Source tags */
+    .source {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--surface-2);
+    }
+
+    .section--dark .source { border-top-color: rgba(255,255,255,0.1); }
+
+    .source .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .source ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .source li {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .source li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .source li.verified::before { background: var(--accent); }
+    .source li.community::before { border: 1.5px solid var(--text-dim); background: transparent; }
+    .source li.unverified::before { background: var(--surface-2); }
+
+    .section--dark .source .label { color: rgba(255,255,255,0.4); }
+    .section--dark .source li { color: rgba(255,255,255,0.6); }
+    .section--dark .source li.community::before { border-color: rgba(255,255,255,0.4); }
+
+    /* Highlight inline */
+    .hl {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .section--dark .hl { color: var(--accent); }
+    .section--accent .hl { color: var(--text); font-weight: 700; }
+
+    /* Diagram boxes */
+    .flow-diagram {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .section--dark .flow-diagram {
+      background: var(--dark-surface);
+      color: var(--dark-text);
+    }
+
+    .flow-diagram .arrow {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Nav */
+    .toc {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--surface-2);
+      padding: 0 40px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .toc-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      gap: 4px;
+    }
+
+    .toc a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 12px 14px;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .toc a:hover {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+    }
+
+    /* Footer */
+    .footer {
+      padding: 40px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+    }
+
+    .footer a:hover { color: var(--text); }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero { padding: 80px 24px 64px; }
+      .hero h1 { font-size: 32px; letter-spacing: -0.96px; }
+      .hero .subtitle { font-size: 16px; }
+      .section { padding: 56px 24px; }
+      .section h2 { font-size: 26px; }
+      .toc { padding: 0 16px; }
+      .toc a { font-size: 12px; padding: 10px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>LLM <span class="accent">×</span> ROS 2</h1>
+    <p class="subtitle">從自然語言到機器人動作——Embodied AI 怎麼讓語言模型控制有身體的機器</p>
+    <div class="meta-tags">
+      <span class="meta-tag">6 節課</span>
+      <span class="meta-tag">技術教材</span>
+      <span class="meta-tag">附來源驗證</span>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1 為什麼</a>
+    <a href="#s2">2 三種架構</a>
+    <a href="#s3">3 安全層</a>
+    <a href="#s4">4 延遲</a>
+    <a href="#s5">5 生態系</a>
+    <a href="#s6">6 你的專案</a>
+  </div>
+</nav>
+
+<!-- Section 1 -->
+<section class="section" id="s1">
+  <div class="section-inner">
+    <div class="section-num">Section 01</div>
+    <h2>為什麼機器人需要語言模型</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>Embodied AI 的核心問題是「翻譯」——把模糊的人類意圖變成精確的機器人動作。</p>
+    </div>
+
+    <p>傳統機器人靠腳本運作：If A then B。寫好的程式決定一切。這在工廠產線上沒問題——環境固定、任務重複、不需要理解。</p>
+
+    <p>但一旦環境變了、任務變了、或者你想用自然語言下指令，腳本就撞牆。「把綠色積木撿起來放到黑色架子上」——這句話對人類很直覺，但對傳統機器人來說，每個詞都是未定義的。</p>
+
+    <p>大型語言模型改變了這件事。LLM 能理解自然語言的意圖，把模糊的指令拆解成具體的子任務。但 LLM 本身只是一個會說話的大腦——<span class="hl">它沒有手、沒有腳、看不見環境</span>。</p>
+
+    <p><span class="hl">Embodied AI（具身智慧）</span>就是在解決這個問題：給大腦一個身體。技術上的核心挑戰是翻譯——怎麼把 LLM 理解到的意圖，轉換成 ROS 2 節點能執行的精確動作。</p>
+
+    <p>如果你做過 AMR 專案，你已經碰過類似的翻譯問題：介面契約定義了「誰跟誰講什麼話、格式長怎樣」。Embodied AI 的翻譯問題是同一件事的上一層——不是系統之間的格式翻譯，而是<span class="hl">人類語言到系統格式的翻譯</span>。</p>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">概念定義：跨多個學術調查論文的共識（Intelligent Computing 2024、Wiley 2025、arXiv 多篇 2025-2026 survey）</li>
+        <li class="verified">AMR 介面契約對照：實測驗證經驗</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>傳統腳本自動化的極限在哪裡？</li>
+        <li>LLM 在 Embodied AI 中扮演什麼角色？它不能做什麼？</li>
+        <li>「翻譯問題」跟 AMR 專案的介面契約有什麼關係？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2 -->
+<section class="section section--surface" id="s2">
+  <div class="section-inner">
+    <div class="section-num">Section 02</div>
+    <h2>三種架構模式</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>目前 LLM 連接 ROS 2 有三種主要模式，各自的取捨不同。不存在「最好的」，只有「適合場景的」。</p>
+    </div>
+
+    <h3>模式 A：直接程式碼生成</h3>
+    <p>LLM 收到自然語言指令後，直接寫出可執行的 Python 程式碼來控制機器人。</p>
+    <p>舉例：你說「往前走一公尺」，LLM 生成：</p>
+
+<pre>msg = Twist()
+msg.linear.x = 0.2
+publisher.publish(msg)
+time.sleep(5)</pre>
+
+    <p>這是 2026 年 Nature Machine Intelligence 論文（Mower 等人，華為 Noah's Ark Lab / TU Darmstadt / ETH Zurich）描述的兩種執行模式之一。</p>
+    <p><span class="hl">優點</span>：彈性最高。LLM 可以處理全新的、沒預設過的任務。</p>
+    <p><span class="hl">風險</span>：任意程式碼執行。LLM 生成的程式碼可能有 bug，在實體機器人上跑有 bug 的程式碼可能撞壞東西。</p>
+
+    <h3>模式 B：結構化動作翻譯</h3>
+    <p>LLM 不寫程式碼，而是輸出結構化的 JSON，描述要做什麼動作。一個專門的驗證節點檢查 JSON 格式正確後，才轉發給 ROS 2 執行。</p>
+    <p>一篇 2025 年發表在 PMC 的論文實測了這個方法：14 個 LLM 模型對 ROS 2 Nav2 導航堆疊下指令。LLM 輸出固定格式：</p>
+
+<pre>{
+  "intent": "navigate",
+  "goal_x": 2.5,
+  "goal_y": 1.0,
+  "note": "移動到桌子旁邊"
+}</pre>
+
+    <p>ROS 2 節點驗證 JSON 格式，不合格就自動重試（最多三次），合格就送進 Nav2 規劃器。</p>
+    <p><span class="hl">優點</span>：可預測、可驗證。動作空間是封閉的，不會出現意外的程式碼。</p>
+    <p><span class="hl">限制</span>：只能做你預先定義好的動作類型。LLM 沒辦法即興創造新動作。</p>
+    <p>AgenticROS（GitHub 148 星）把這個概念推得更遠：機器人透過<span class="hl">「能力宣告」</span>（Capability Manifest）告訴 LLM 自己能做什麼——<code>drive_base</code>、<code>take_snapshot</code>、<code>find_object</code> 等。LLM 針對這些動詞規劃，不碰底層的 ROS 2 topic。</p>
+
+    <h3>模式 C：行為樹生成</h3>
+    <p>LLM 把任務拆解成行為樹（Behavior Tree）結構——一組有順序、有條件分支、有備案的動作序列。同樣來自 Nature Machine Intelligence 論文的第二種執行模式。</p>
+    <p>舉例：「撿起綠色積木放到黑色架子上」被拆成：</p>
+    <ol style="padding-left:20px; margin: 16px 0 24px;">
+      <li style="margin-bottom:4px;">找到綠色積木（找不到 → 旋轉掃描 → 再找）</li>
+      <li style="margin-bottom:4px;">移動到積木前方</li>
+      <li style="margin-bottom:4px;">計算抓取角度</li>
+      <li style="margin-bottom:4px;">抓取</li>
+      <li style="margin-bottom:4px;">移動到黑色架子</li>
+      <li>放下</li>
+    </ol>
+    <p><span class="hl">優點</span>：處理複雜多步驟任務最好，有條件分支和備案。</p>
+    <p><span class="hl">限制</span>：行為樹本身就很難設計，LLM 生成的行為樹品質不一定穩定。</p>
+
+    <h3>三種模式比較</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th></th><th>A：程式碼生成</th><th>B：結構化 JSON</th><th>C：行為樹</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>彈性</strong></td><td>最高</td><td>受限於預定義動作</td><td>高（多步驟 + 分支）</td></tr>
+          <tr><td><strong>安全性</strong></td><td>最低</td><td>最高</td><td>中等</td></tr>
+          <tr><td><strong>複雜任務</strong></td><td>看 LLM 能力</td><td>需要外部編排</td><td>內建支援</td></tr>
+          <tr><td><strong>驗證難度</strong></td><td>很難（任意程式碼）</td><td>很容易（schema 檢查）</td><td>中等</td></tr>
+          <tr><td><strong>適合場景</strong></td><td>研究、原型</td><td>生產環境、明確任務</td><td>複雜自主任務</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">模式 A + C：Nature Machine Intelligence（Mower et al., 2026, DOI: 10.1038/s42256-026-01186-z）——同行審查，開源</li>
+        <li class="verified">模式 B 實測數據：PMC/NIH 論文（2025），14 模型基準測試——同行審查，附 GitHub repo</li>
+        <li class="community">AgenticROS 能力宣告：GitHub repo（148 星，Apache-2.0）——社群驗證</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>三種模式各自最大的優點和最大的風險是什麼？</li>
+        <li>如果你要讓 LanderPi 在家裡自主導航到某個房間，你會選哪種模式？為什麼？</li>
+        <li>「能力宣告」跟 AMR 的「介面契約」概念有什麼相似之處？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3 -->
+<section class="section section--dark" id="s3">
+  <div class="section-inner">
+    <div class="section-num">Section 03</div>
+    <h2>安全層——為什麼 LLM 不能直接控制機器人</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>理解為什麼需要在 LLM 和實體硬體之間加一道安全閘門，以及這道閘門怎麼運作。</p>
+    </div>
+
+    <p>ROSClaw（GitHub 196 星，MIT 授權）提出了一個核心原則：</p>
+
+    <p style="font-size: 20px; font-weight: 600; color: var(--accent); text-align: center; padding: 24px 0; line-height: 1.4;">「模型的輸出不應該直接控制機器人。」</p>
+
+    <p>為什麼？因為 LLM 會幻覺。它可能自信滿滿地生成一個會讓手臂撞到桌面的動作指令。在聊天視窗裡，幻覺只是一段錯誤的文字；<span class="hl">在實體機器人上，幻覺可能是一個撞壞感測器的指令</span>。</p>
+
+    <p>ROSClaw 的做法是在 LLM 和機器人之間放一個守門員（<code>rosclawd</code>）：</p>
+
+    <div class="flow-diagram">
+      LLM 意圖 <span class="arrow">→</span> 能力匹配 <span class="arrow">→</span> 安全策略檢查 <span class="arrow">→</span> 資源租借<br>
+      <span class="arrow">→</span> 沙箱預演 <span class="arrow">→</span> 派遣執行 <span class="arrow">→</span> 感測器觀察 <span class="arrow">→</span> 驗證 <span class="arrow">→</span> 回執
+    </div>
+
+    <h3>沙箱預演</h3>
+    <p>在 MuJoCo 物理模擬器裡先跑一次。如果模擬中手臂撞到東西，就不會送到真實硬體。</p>
+
+    <h3>許可證制度</h3>
+    <p>每次動作都需要一張有時效的許可證。過期就作廢。不存在「一次授權、永久執行」。</p>
+
+    <h3>證據回執</h3>
+    <p>每次動作完成後，系統產出一份帶時間戳的證據文件。不是「我做了」，而是「我做了、這是證據、這是感測器看到的結果」。</p>
+
+    <h3>五個執行層級</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>層級</th><th>說明</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td><strong>FIXTURE</strong></td><td>純合成資料</td><td>單元測試</td></tr>
+          <tr><td><strong>DRY_RUN</strong></td><td>只檢查格式和靜態策略</td><td>部署前驗證</td></tr>
+          <tr><td><strong>SIMULATION</strong></td><td>物理模擬（MuJoCo / Gazebo）</td><td>安全驗證</td></tr>
+          <tr><td><strong>SHADOW</strong></td><td>契約已定義，尚待驗收</td><td>準備上線</td></tr>
+          <tr><td><strong>REAL</strong></td><td>真實硬體，失敗就關</td><td>正式執行</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>如果你做過 AMR，這個概念你不陌生——你的「翻譯員」就是在 MoveIt 和控制器之間做格式轉換和驗證的中間層。ROSClaw 把這個思路推到了 LLM 層級：<span class="hl">不只翻譯格式，還要驗證意圖</span>。</p>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="community">ROSClaw 架構：GitHub repo（196 星，MIT，Alpha）——UR5e 模擬已通過，真實硬體驗證待完成</li>
+        <li class="community">「模型輸出不能直接控制機器人」原則：ROSClaw README——設計原則，非實測結論</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>為什麼 LLM 的幻覺在實體機器人上比在聊天視窗裡嚴重？</li>
+        <li>「沙箱預演」解決的是什麼問題？</li>
+        <li>ROSClaw 的五個執行層級中，你覺得哪一層對開發者最有用？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 4 -->
+<section class="section" id="s4">
+  <div class="section-inner">
+    <div class="section-num">Section 04</div>
+    <h2>延遲與模型選擇</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>不同 LLM 的回應速度差異極大，選模型要看任務對延遲的容忍度。</p>
+    </div>
+
+    <p>PMC 論文實測了 14 個模型對 ROS 2 Nav2 下導航指令的延遲：</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>模型</th><th>平均延遲</th><th>特性</th></tr></thead>
+        <tbody>
+          <tr><td><strong>GPT-3.5</strong></td><td style="color: var(--accent); font-weight:600;">0.97 秒</td><td>最快，變異度低</td></tr>
+          <tr><td><strong>LLaMA-3.3-70B</strong></td><td>1.82 秒</td><td>本地可部署（via Groq）</td></tr>
+          <tr><td><strong>Claude 3.7 Sonnet</strong></td><td>2.71 秒</td><td>中等</td></tr>
+          <tr><td><strong>Gemini 2.5 Pro</strong></td><td>9.85 秒</td><td>推理強但慢</td></tr>
+          <tr><td><strong>GPT-5</strong></td><td style="color: var(--text-muted);">12.14 秒</td><td>最強推理但最慢</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>14 個模型的指令解析成功率都在 95-100%。差異在延遲和推理能力。</p>
+
+    <h3>取捨：速度 vs 推理</h3>
+    <p><span class="hl">即時控制</span>（機器人在移動中需要持續決策）→ 用輕量模型（GPT-3.5 等級），低於 2 秒。</p>
+    <p><span class="hl">任務規劃</span>（一次性拆解複雜指令，不需要即時）→ 用重量模型（GPT-5、Gemini 2.5 Pro），可以等 10 秒以上。</p>
+
+    <h3>雲端 vs 本地部署</h3>
+    <p>AgenticROS 支援 Ollama 整合（推薦 Qwen3-VL 8B/2B），零雲端 API 依賴。這對兩種場景很關鍵：</p>
+    <ul style="padding-left: 20px; margin: 8px 0 16px;">
+      <li style="margin-bottom:4px;"><strong>隱私敏感</strong>：不想把機器人看到的畫面傳到雲端</li>
+      <li><strong>網路不穩</strong>：Wi-Fi 斷了機器人不能變笨</li>
+    </ul>
+    <p>代價是本地模型的推理能力通常不如雲端大模型。</p>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">延遲數據：PMC/NIH 論文（2025），同行審查</li>
+        <li class="community">Ollama 整合：AgenticROS GitHub repo——社群驗證</li>
+        <li class="unverified">Qwen3-VL 推薦：AgenticROS README——廠商建議，未獨立驗證</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>什麼情況下你會選延遲 12 秒的模型而不是 1 秒的？</li>
+        <li>本地部署 LLM 的最大優勢和最大代價分別是什麼？</li>
+        <li>如果你的 LanderPi 跑在 Pi 5 上，本地跑 LLM 實際上可行嗎？需要什麼條件？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 5 -->
+<section class="section section--accent" id="s5">
+  <div class="section-inner">
+    <div class="section-num">Section 05</div>
+    <h2>現在的工具生態</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>了解目前可用的三個主要框架，知道它們各自的定位和成熟度。</p>
+    </div>
+
+    <h3>ROS-LLM（學術框架）</h3>
+    <p>Nature Machine Intelligence 論文（2026）的開源實作。來自華為 Noah's Ark Lab、TU Darmstadt、ETH Zurich。</p>
+    <p><span class="hl">定位</span>：研究用框架。證明了「LLM + ROS = 可行」。適合想理解原理、跑學術實驗；不適合直接拿去做產品。</p>
+
+    <h3>AgenticROS（AI 不可知介面層）</h3>
+    <p>GitHub 148 星，Apache-2.0。不綁定特定 LLM——同一個機器人可以同時被 Claude、Codex、Gemini 控制，不用改程式碼。透過 MCP 連接。</p>
+    <p>核心概念是「能力宣告」：機器人告訴 AI 自己能做什麼，AI 針對動詞規劃，不碰底層 topic。支援 TurtleBot3 模擬、多機器人隊列、技能市集。</p>
+    <p><span class="hl">定位</span>：快速讓 AI 控制 ROS 2 機器人。一行安裝（<code>npx agenticros</code>）。</p>
+
+    <h3>ROSClaw（安全優先執行運行時）</h3>
+    <p>GitHub 196 星，MIT，Alpha 階段。不是 ROS 2 的替代品，而是 AI 和 ROS 2 之間的中介軟體。核心訴求：「request 不等於 execution，execution 需要 evidence」。</p>
+    <p>UR5e 手臂模擬已通過，真實硬體驗證待完成。</p>
+    <p><span class="hl">定位</span>：需要安全邊界和審計軌跡的場景。上手門檻最高。</p>
+
+    <h3>三個框架比較</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>ROS-LLM</th><th>AgenticROS</th><th>ROSClaw</th></tr></thead>
+        <tbody>
+          <tr><td><strong>來源</strong></td><td>學術論文</td><td>社群開源</td><td>社群開源</td></tr>
+          <tr><td><strong>成熟度</strong></td><td>研究驗證</td><td>可用原型</td><td>Alpha</td></tr>
+          <tr><td><strong>核心訴求</strong></td><td>證明可行性</td><td>AI 平台相容</td><td>安全與可信</td></tr>
+          <tr><td><strong>安全機制</strong></td><td>基本</td><td>中等</td><td>最完整</td></tr>
+          <tr><td><strong>上手難度</strong></td><td>中等</td><td>最低</td><td>最高</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">ROS-LLM：Nature Machine Intelligence 同行審查——已驗證</li>
+        <li class="community">AgenticROS：GitHub 148 星——社群驗證</li>
+        <li class="community">ROSClaw：GitHub 196 星，Alpha——社群驗證，硬體驗證待完成</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>如果你只是想在 LanderPi 上快速試一下用語音控制機器人移動，你會先看哪個框架？</li>
+        <li>為什麼 ROSClaw 要區分「request」和「execution」？</li>
+        <li>「能力宣告」的設計為什麼比直接暴露 ROS 2 topic 更好？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 6 -->
+<section class="section section--surface" id="s6">
+  <div class="section-inner">
+    <div class="section-num">Section 06</div>
+    <h2>跟你的專案怎麼接</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>把前五節學到的東西對應到你手上的兩個專案，看哪些概念可以直接用。</p>
+    </div>
+
+    <h3>LanderPi</h3>
+    <p>你的 LanderPi 已經有完整的 ROS 2 堆疊、6-DOF 手臂、LiDAR、Aurora930 Pro 深度相機。AMR 專案讓你理解了 ROS 2 的架構和介面契約。缺的是 LLM 層。</p>
+    <p>加上去的最快路徑：</p>
+    <ol style="padding-left: 20px; margin: 8px 0 16px;">
+      <li style="margin-bottom:8px;">先把 LanderPi 跑起來（組裝、開機、走一遍官方教學）——這步跟 LLM 無關</li>
+      <li style="margin-bottom:8px;">官方教學走完後，試 AgenticROS（一行安裝，支援 Pi 5）</li>
+      <li style="margin-bottom:8px;">透過 MCP 連接到 LanderPi 的 ROS 2 節點</li>
+      <li>用自然語言控制基本動作（前進、轉彎、拍照）</li>
+    </ol>
+    <p>要注意：Pi 5 的算力跑本地 LLM 很吃力。比較實際的做法是 <span class="hl">Pi 5 跑 ROS 2 和感測器，LLM 推理放你的 Mac Mini 或雲端</span>。</p>
+
+    <p>最可能的接法：</p>
+    <div class="flow-diagram">
+      Mac Mini（Claude / GPT）<span class="arrow">→</span> rosbridge WebSocket <span class="arrow">→</span> Pi 5 Docker 裡的 ROS 2 <span class="arrow">→</span> Hiwonder 舵機控制鏈
+    </div>
+
+    <h3>AI Little Monster</h3>
+    <p>你的三層架構——Mac Mini 腦 / 手機感官 / 娃娃身體——本質上就是一個 Embodied AI 系統。差異在於 AI Little Monster 不需要 ROS 2（不是精密運動控制），但「意圖 → 拆解 → 執行 → 回饋」的迴圈是完全一樣的。</p>
+    <p>可以直接帶過去的概念：</p>
+    <ul style="padding-left: 20px; margin: 8px 0 16px;">
+      <li style="margin-bottom:8px;"><strong>結構化動作翻譯</strong>（模式 B）：定義娃娃能做的動作清單，LLM 從清單裡選</li>
+      <li style="margin-bottom:8px;"><strong>安全層的思路</strong>：LLM 幻覺在對話夥伴上的風險不是物理碰撞，而是說出不該說的話</li>
+      <li><strong>能力宣告</strong>：讓 LLM 知道娃娃「能做什麼」而不是「怎麼做」</li>
+    </ul>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">LanderPi 硬體規格：LanderPi 專案資料——你自己的文件</li>
+        <li class="community">AgenticROS Pi 5 支援：GitHub README——社群驗證</li>
+        <li class="unverified">rosbridge + Docker ROS 2 相容性：架構推論——未經實測驗證</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>LanderPi 加上 LLM 層後，你覺得最大的瓶頸會在哪裡？</li>
+        <li>AI Little Monster 的「安全層」需要防範什麼？跟 ROSClaw 防範的有什麼不同？</li>
+        <li>「能力宣告」的概念怎麼套用到一個不是 ROS 2 的系統上？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Sources Legend + Footer -->
+<section class="section">
+  <div class="section-inner">
+    <h3 style="margin-top:0;">來源可信度圖例</h3>
+    <ul style="list-style:none; padding:0; font-size: 14px;">
+      <li style="padding-left:20px; position:relative; margin-bottom:8px;">
+        <span style="position:absolute; left:0; top:6px; width:8px; height:8px; border-radius:50%; background:var(--accent);"></span>
+        <strong>已驗證</strong>：同行審查論文、官方文件、或實測經驗
+      </li>
+      <li style="padding-left:20px; position:relative; margin-bottom:8px;">
+        <span style="position:absolute; left:0; top:6px; width:8px; height:8px; border-radius:50%; border: 1.5px solid var(--text-dim); background:transparent;"></span>
+        <strong>社群驗證</strong>：活躍 GitHub repo、多人使用、有 issue 紀錄
+      </li>
+      <li style="padding-left:20px; position:relative;">
+        <span style="position:absolute; left:0; top:6px; width:8px; height:8px; border-radius:50%; background:var(--surface-2);"></span>
+        <strong>未驗證</strong>：單一來源聲稱、架構推論、或廠商宣稱
+      </li>
+    </ul>
+
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--surface-2);">
+      <h3 style="margin-top:0;">參考文獻</h3>
+      <ol style="padding-left:20px; font-size:13px; color:var(--text-dim); line-height:1.8;">
+        <li>Mower, C.E. et al. (2026). "ROS-LLM: A framework for embodied intelligence." <em>Nature Machine Intelligence</em>. DOI: 10.1038/s42256-026-01186-z</li>
+        <li>Latency-Aware Benchmarking of LLMs for Natural-Language Robot Navigation in ROS 2 (2025). <em>PMC/NIH</em>. PMC12846292</li>
+        <li>AgenticROS. GitHub: github.com/agenticros/agenticros (Apache-2.0, 148 stars)</li>
+        <li>ROSClaw. GitHub: github.com/ros-claw/rosclaw (MIT, 196 stars)</li>
+        <li>原始文章：Hackster.io — "Embodied AI on ROS 2: The OpenClaw & ROSOrin Pro Guide" (2026-03-31)</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>Charles Yang · ProtoLearn · 2026</p>
+  <p><a href="../">← 回到作品集</a></p>
+</footer>
+
+</body>
+</html>
