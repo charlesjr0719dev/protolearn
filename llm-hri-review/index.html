@@ -453,83 +453,60 @@
 <section class="section" id="s1">
   <div class="section-inner">
     <div class="section-num">Section 01</div>
-    <h2>這篇論文在講什麼、怎麼篩出來的</h2>
+    <h2>這篇論文在講什麼</h2>
 
     <div class="learning-point">
       <div class="label">學習重點</div>
-      <p>這篇不是作者自己的看法，是照一套公開規則從 904 篇論文篩出 86 篇再整理出來的。規則跟數字都寫在論文裡，別人可以照做一次檢查結果。所以讀它拿到的是兩樣東西：這個領域有哪些東西（地圖），以及每個說法是從哪篇論文來的（可以查）。</p>
+      <p>這是一張地圖，從 86 篇同儕審查的研究整理出來：LLM 給機器人的三種新能力、動手做時要做的三個決定、以及十一個會踩的坑。地圖上每個說法都能追回原始論文。讀它的目的不是背結論，是知道自己的專案落在哪裡、別人已經試過什麼。</p>
     </div>
 
     <div class="figure">
       <img src="img/fig01-teaser.jpg" alt="論文視覺摘要">
-      <div class="figcap">圖 1：論文的視覺摘要。左到右是研究流程、三階段框架、設計元件、評估、應用與挑戰，也就是本頁九節的順序。</div>
+      <div class="figcap">圖 1：論文的視覺摘要。左到右是三階段框架、設計元件、評估、應用與挑戰，也就是本頁第 2 到第 8 節的順序。</div>
     </div>
 
-    <h3>為什麼是現在</h3>
-    <div class="figure">
-      <img src="img/fig02-pubtrend.jpg" alt="ACM 資料庫 2015 到 2025 發表趨勢">
-      <div class="figcap">圖 2：ACM 數位圖書館 2015 到 2025 年的發表趨勢。HRI 本身十年來穩定在每年五百到一千篇，LLM 驅動的 HRI 從 2019 年的 1 篇跳到 2024 年的 311 篇，曲線跟 LLM 研究本身的爆發同步。</div>
-    </div>
-
-    <h3>四個研究問題</h3>
-    <p>作者是港科大（廣州）加浙大、四川大學華西醫院的團隊，2026 年 2 月放上 arXiv。他們問四件事：</p>
+    <h3>四個問題，對應本頁的節</h3>
     <ul class="plain">
-      <li>LLM 改變了人機互動的哪些基礎能力？（第 2 到 4 節：三階段框架）</li>
+      <li>LLM 改變了人機互動的哪些基礎能力？（第 2 到 4 節：感知、互動、對齊）</li>
       <li>LLM 怎麼被整合進系統設計？（第 5 節：互動通道、形態、自主程度）</li>
-      <li>這種系統怎麼評估？（第 6 節：研究方法與指標）</li>
-      <li>未來的機會與挑戰在哪？（第 7、8 節：應用地圖與十一個挑戰）</li>
+      <li>這種系統怎麼評估？（第 6 節：方法與指標）</li>
+      <li>機會與挑戰在哪？（第 7、8 節：應用地圖與十一個挑戰）</li>
     </ul>
 
     <h3>三個名詞的邊界</h3>
-    <p><span class="hl">機器人</span>：必須有實體，或在 VR、AR 裡有模擬的實體存在。純文字聊天機器人不算。這條線劃得很硬，因為整篇論文的主題就是「身體」帶來的差異。</p>
-    <p><span class="hl">人機互動（HRI）</span>：採 Sheridan 的四分類，也就是監督控制、遙操作、自動車輛、社交互動。研究方法靠使用者研究，不是只跑基準測試。</p>
+    <p><span class="hl">機器人</span>：必須有實體，或在 VR、AR 裡有模擬的實體存在。純文字聊天機器人不算。這條線劃得很硬，因為整篇論文的主題就是「身體」帶來的差異：會碰到東西、會佔空間、會被人當成有存在感的對象。</p>
+    <p><span class="hl">人機互動（HRI）</span>：採 Sheridan 的四分類，也就是監督控制、遙操作、自動車輛、社交互動。判斷好壞靠使用者研究，不是只跑基準測試。</p>
     <div class="figure">
       <img src="img/fig03-hri-types.jpg" alt="Sheridan 四種人機互動型態">
-      <div class="figcap">圖 3：Sheridan 的四種型態。監督控制（人監看機器）、遙操作（人透過介面直接操作手臂）、自動車輛、社交互動。作者用這四型劃定「什麼算 HRI」的邊界。</div>
+      <div class="figcap">圖 3：Sheridan 的四種型態。監督控制（人監看機器）、遙操作（人透過介面直接操作手臂）、自動車輛、社交互動。自己的專案通常會落在其中一到兩型，這決定了後面第 5 節「自主程度」該切在哪。</div>
     </div>
-    <p><span class="hl">LLM</span>：故意定得寬，涵蓋純文字模型、視覺語言模型（VLM）、多模態模型（MLLM）。理由是這個領域變太快，定太窄一年就過時。</p>
+    <p><span class="hl">LLM</span>：故意定得寬，涵蓋純文字模型、視覺語言模型（VLM）、多模態模型（MLLM）。實務上的意思是：本頁講的東西不限於「接一個 GPT」，接視覺模型也適用。</p>
 
-    <h3>他們怎麼驗證</h3>
-    <p>讀任何綜述都該先問一句：怎麼確認資料是對的？這篇的做法是 <span class="hl">PRISMA 流程</span>，一套系統性回顧的標準規範，每個篩選步驟都要公開數字。</p>
-
-    <div class="figure">
-      <img src="img/fig04-prisma.jpg" alt="PRISMA 篩選流程圖">
-      <div class="figcap">圖 4：904 篇起步，去重與時間過濾後剩 846，標題摘要篩掉 449，全文審 397 篇再排除 311，最後 86 篇。排除原因前三名：沒有實體機器人（83）、沒有真人互動或評估（81）、純理論（59）。</div>
-    </div>
-
-    <p>納入條件很嚴：要同儕審查的完整論文、要有實體機器人、要有真人參與的互動或評估、LLM 要是系統核心元件而不是在未來工作段落提一下。排除了工作坊短文與技術報告。</p>
-    <div class="figure">
-      <img src="img/fig05-venues.jpg" alt="納入論文的期刊分布與年份">
-      <div class="figcap">圖 5：86 篇的出處與年份。HRI 會議 31%、CHI 13%、RO-MAN 10%、國際社交機器人期刊 8%。年份集中在 2024（32 篇）與 2025（46 篇），2021 年一篇都沒有。</div>
-    </div>
-
-    <p>編碼由兩位審查者獨立進行，算 <span class="hl">Cohen's kappa</span> 一致性係數。表面特徵（形態 0.894、應用領域 0.904）一致性高，需要詮釋的類別（感知理解 0.720、對齊 0.684）一致性低，他們開校準會議重新定義後再編碼一次。另外從 306 篇被排除的論文隨機抽 100 篇重審，只找到 3 篇邊緣案例，最後仍判定排除。</p>
-
-    <h3>這份地圖的可信度分層</h3>
+    <h3>哪些部分可以信到什麼程度</h3>
     <div class="table-wrap">
       <table>
         <tr><th>層</th><th>內容</th><th>等級</th></tr>
-        <tr><td>底層證據</td><td>86 篇同儕審查論文，主要來自 HRI（31%）、CHI（13%）、RO-MAN（10%）等頂會，可在 llms-hri.github.io 逐篇查</td><td>已驗證</td></tr>
-        <tr><td>三階段框架與十一個挑戰</td><td>作者自己的綜合與命名，方法嚴謹但框架本身還沒被其他研究者採用或檢驗</td><td>社群層</td></tr>
-        <tr><td>這篇論文本身</td><td>arXiv 預印本，尚未通過期刊或會議審查</td><td>社群層</td></tr>
-        <tr><td>第 9 節的專案對照</td><td>從論文推到兩種常見的個人專案，屬推論，沒有實測</td><td>未驗證</td></tr>
+        <tr><td>底層證據</td><td>86 篇同儕審查論文，主要來自 HRI、CHI、RO-MAN 等頂會，作者建了資料庫 llms-hri.github.io 可以逐篇查</td><td>已驗證</td></tr>
+        <tr><td>三階段框架與十一個挑戰</td><td>作者自己的綜合與命名，還沒被其他研究者採用或檢驗</td><td>社群層</td></tr>
+        <tr><td>第 9 節的專案對照</td><td>從論文推到兩種常見的個人專案，沒有實測</td><td>未驗證</td></tr>
       </table>
     </div>
+    <p>用法：引用具體發現時（例如「控制粒度太細會降低社交存在感」）追到原始論文；引用框架時（例如「感知、互動、對齊」）知道那是作者的整理，不是共識。</p>
 
     <div class="source">
       <div class="label">來源</div>
       <ul>
-        <li class="verified">篩選數字、納入條件、一致性係數：論文第 3 節與圖 4，可重做</li>
-        <li class="community">論文本身：arXiv 2602.15063v1，預印本</li>
+        <li class="verified">名詞定義與 86 篇底層研究：論文第 2 節與附錄資料庫</li>
+        <li class="community">論文本身：arXiv 2602.15063v1，預印本，尚未通過審查</li>
       </ul>
     </div>
 
     <div class="self-check">
       <div class="label">自我檢查</div>
       <ol>
-        <li>「系統性回顧」跟「找幾篇論文寫綜述」最大的差別是什麼？</li>
         <li>為什麼作者把「純文字聊天機器人」排除在外？這跟姐妹頁講的 Embodied AI 有什麼關係？</li>
-        <li>如果你要引用這篇的某個結論，你會引「作者說」還是「作者引用的那篇原始研究說」？為什麼？</li>
+        <li>自己手上的專案落在 Sheridan 四型的哪一型？有沒有跨兩型？</li>
+        <li>要引用這篇的某個結論時，該引「作者說」還是「作者引用的那篇原始研究說」？什麼情況下差別很大？</li>
       </ol>
     </div>
   </div>
@@ -1086,7 +1063,6 @@
       <ol style="padding-left:20px; font-size:13px; color:var(--text-dim); line-height:1.8;">
         <li>Wang, Y., Xu, Y., Nikolova, A., Wang, Y., Wang, J., Wang, C., &amp; Tong, X. (2026). "How Do We Research Human-Robot Interaction in the Age of Large Language Models? A Systematic Review." <em>arXiv</em> 2602.15063v1. 本頁所有圖片取自此論文。</li>
         <li>作者建立的 86 篇論文資料庫：llms-hri.github.io</li>
-        <li>Page, M.J. et al. (2021). PRISMA 2020 statement. <em>BMJ</em>. 系統性回顧的報告規範。</li>
         <li>Sheridan, T.B. (2016). "Human–Robot Interaction: Status and Challenges." <em>Human Factors</em>. 四種互動型態的分類。</li>
         <li>Cui et al. (2023). LILAC：用自然語言線上修正機器人控制空間。論文第 4.2.2 節引用。</li>
         <li>Dell’Anna &amp; Jamshidnejad (2024). SONAR：以禁止與義務規則強制社交適當性的架構。論文第 4.2.3 與 4.3.2 節引用。</li>
