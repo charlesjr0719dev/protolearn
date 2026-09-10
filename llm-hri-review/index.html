@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM × HRI — 人機互動設計指南</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f8f6f3;
+      --surface-2: #d9d7d5;
+      --border: #262626;
+      --text: #262626;
+      --text-dim: #727272;
+      --text-muted: #8f8e8d;
+      --accent: #ff9600;
+      --accent-bg: #fff3e0;
+      --dark-bg: #262626;
+      --dark-surface: #2d2d2d;
+      --dark-text: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', 'Noto Sans TC', -apple-system, 'PingFang TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Hero */
+    .hero {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+      padding: 120px 40px 100px;
+      text-align: center;
+    }
+
+    .hero-inner { max-width: 720px; margin: 0 auto; }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -1.44px;
+      line-height: 1.06;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 .accent { color: var(--accent); }
+
+    .hero .subtitle {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--surface-2);
+      line-height: 1.6;
+      max-width: 560px;
+      margin: 0 auto 32px;
+    }
+
+    .hero .meta-tags {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .hero .meta-tag {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 14px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.7);
+    }
+
+    .hero .sister {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .hero .sister a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,150,0,0.4);
+    }
+
+    /* Sections */
+    .section { padding: 80px 40px; }
+    .section-inner { max-width: 720px; margin: 0 auto; }
+    .section--surface { background: var(--surface); }
+    .section--dark { background: var(--dark-bg); color: var(--dark-text); }
+    .section--accent { background: var(--accent); color: var(--text); }
+
+    .section-num {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .section--dark .section-num { color: rgba(255,255,255,0.4); }
+    .section--accent .section-num { color: rgba(38,38,38,0.5); }
+
+    .section h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.96px;
+      line-height: 1.1;
+      margin-bottom: 32px;
+    }
+
+    .section--accent h2 { color: var(--text); }
+
+    .section h3 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      line-height: 1.3;
+      margin: 40px 0 16px;
+    }
+
+    .section h3:first-of-type { margin-top: 0; }
+
+    .section h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 24px 0 8px;
+    }
+
+    .section p { margin-bottom: 16px; color: var(--text-dim); }
+    .section--dark p { color: rgba(255,255,255,0.7); }
+    .section--accent p { color: rgba(38,38,38,0.75); }
+
+    .section ul.plain { padding-left: 20px; margin: 8px 0 16px; color: var(--text-dim); }
+    .section ul.plain li { margin-bottom: 8px; }
+    .section--dark ul.plain { color: rgba(255,255,255,0.7); }
+    .section--accent ul.plain { color: rgba(38,38,38,0.75); }
+
+    /* Learning point box */
+    .learning-point {
+      background: var(--accent-bg);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .learning-point .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .learning-point p { color: var(--text); margin-bottom: 0; font-size: 15px; }
+    .section--dark .learning-point { background: rgba(255,150,0,0.12); border-left-color: var(--accent); }
+    .section--dark .learning-point p { color: var(--dark-text); }
+    .section--accent .learning-point { background: rgba(255,255,255,0.4); border-left-color: var(--text); }
+    .section--accent .learning-point .label { color: var(--text); }
+    .section--accent .learning-point p { color: var(--text); }
+
+    /* Self check */
+    .self-check {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 24px;
+      margin-top: 40px;
+    }
+
+    .self-check .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .self-check ol { padding-left: 20px; color: var(--text); }
+    .self-check li { margin-bottom: 8px; font-size: 15px; line-height: 1.6; }
+    .section--dark .self-check { background: var(--dark-surface); }
+    .section--dark .self-check .label { color: rgba(255,255,255,0.4); }
+    .section--dark .self-check ol { color: var(--dark-text); }
+    .section--accent .self-check { background: rgba(255,255,255,0.5); }
+
+    /* Figures */
+    .figure {
+      margin: 24px 0 28px;
+    }
+
+    .figure img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+      border: 1px solid var(--surface-2);
+      background: #ffffff;
+    }
+
+    .section--dark .figure img { border-color: rgba(255,255,255,0.15); }
+    .section--accent .figure img { border-color: rgba(38,38,38,0.2); }
+
+    .figure .figcap {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .section--dark .figure .figcap { color: rgba(255,255,255,0.5); }
+    .section--accent .figure .figcap { color: rgba(38,38,38,0.6); }
+
+    /* Code */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      background: var(--surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .section--dark code { background: var(--dark-surface); color: var(--dark-text); }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; margin: 16px 0 24px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--surface-2);
+      color: var(--text);
+      vertical-align: top;
+    }
+
+    .section--dark th { color: rgba(255,255,255,0.4); border-bottom-color: rgba(255,255,255,0.2); }
+    .section--dark td { color: var(--dark-text); border-bottom-color: rgba(255,255,255,0.08); }
+    .section--accent th { color: rgba(38,38,38,0.6); border-bottom-color: var(--text); }
+    .section--accent td { border-bottom-color: rgba(38,38,38,0.2); }
+
+    /* Source tags */
+    .source {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--surface-2);
+    }
+
+    .section--dark .source { border-top-color: rgba(255,255,255,0.1); }
+    .section--accent .source { border-top-color: rgba(38,38,38,0.25); }
+
+    .source .label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .source ul { list-style: none; padding: 0; }
+
+    .source li {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .source li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .source li.verified::before { background: var(--accent); }
+    .source li.community::before { border: 1.5px solid var(--text-dim); background: transparent; }
+    .source li.unverified::before { background: var(--surface-2); }
+
+    .section--dark .source .label { color: rgba(255,255,255,0.4); }
+    .section--dark .source li { color: rgba(255,255,255,0.6); }
+    .section--dark .source li.community::before { border-color: rgba(255,255,255,0.4); }
+    .section--accent .source .label { color: rgba(38,38,38,0.6); }
+    .section--accent .source li { color: rgba(38,38,38,0.75); }
+    .section--accent .source li.verified::before { background: var(--text); }
+    .section--accent .source li.community::before { border-color: var(--text); }
+    .section--accent .source li.unverified::before { background: rgba(255,255,255,0.7); }
+
+    /* Highlight inline */
+    .hl { color: var(--accent); font-weight: 600; }
+    .section--dark .hl { color: var(--accent); }
+    .section--accent .hl { color: var(--text); font-weight: 700; }
+
+    /* Flow diagram */
+    .flow-diagram {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 24px;
+      margin: 24px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .section--dark .flow-diagram { background: var(--dark-surface); color: var(--dark-text); }
+    .flow-diagram .arrow { color: var(--accent); font-weight: 700; }
+
+    /* Challenge cards */
+    .challenge {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .challenge:last-of-type { border-bottom: none; }
+
+    .challenge .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+
+    .challenge h4 { margin: 0 0 6px; font-size: 17px; color: var(--dark-text); }
+    .challenge p { margin-bottom: 8px; font-size: 15px; }
+    .challenge p:last-child { margin-bottom: 0; }
+
+    .challenge .for-you {
+      font-size: 13px;
+      color: var(--accent);
+    }
+
+    .group-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin: 40px 0 8px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    /* Nav */
+    .toc {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--surface-2);
+      padding: 0 40px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .toc-inner { max-width: 720px; margin: 0 auto; display: flex; gap: 4px; }
+
+    .toc a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 12px 14px;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .toc a:hover { color: var(--text); border-bottom-color: var(--accent); }
+
+    /* Footer */
+    .footer {
+      padding: 40px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer a { color: var(--text-dim); text-decoration: none; }
+    .footer a:hover { color: var(--text); }
+
+    @media (max-width: 640px) {
+      .hero { padding: 80px 24px 64px; }
+      .hero h1 { font-size: 32px; letter-spacing: -0.96px; }
+      .hero .subtitle { font-size: 16px; }
+      .section { padding: 56px 24px; }
+      .section h2 { font-size: 26px; }
+      .toc { padding: 0 16px; }
+      .toc a { font-size: 12px; padding: 10px 10px; }
+      .challenge { grid-template-columns: 32px 1fr; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>LLM <span class="accent">×</span> HRI</h1>
+    <p class="subtitle">語言模型接上機器人之後，人跟機器人之間要設計什麼。一篇 86 篇論文的系統性回顧導讀</p>
+    <div class="meta-tags">
+      <span class="meta-tag">9 節課</span>
+      <span class="meta-tag">論文導讀</span>
+      <span class="meta-tag">附來源驗證</span>
+    </div>
+    <p class="sister">姐妹頁：<a href="../embodied-ai-ros2/">LLM × ROS 2</a> 講怎麼接線，這頁講接好之後怎麼設計</p>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#s1">1 這篇論文</a>
+    <a href="#s2">2 感知</a>
+    <a href="#s3">3 互動</a>
+    <a href="#s4">4 對齊</a>
+    <a href="#s5">5 三個決定</a>
+    <a href="#s6">6 怎麼評估</a>
+    <a href="#s7">7 應用地圖</a>
+    <a href="#s8">8 十一個挑戰</a>
+    <a href="#s9">9 你的專案</a>
+  </div>
+</nav>
+
+<!-- Section 1 -->
+<section class="section" id="s1">
+  <div class="section-inner">
+    <div class="section-num">Section 01</div>
+    <h2>這篇論文在講什麼、怎麼篩出來的</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>系統性回顧跟一般綜述的差別在「篩選過程可以被別人重做」。這篇從 904 篇篩到 86 篇，每一步都有數字。讀它的價值不是背結論，是拿到一張這個領域的地圖，以及一套可以追溯的證據。</p>
+    </div>
+
+    <div class="figure">
+      <img src="img/fig01-teaser.jpg" alt="論文視覺摘要">
+      <div class="figcap">圖 1：論文的視覺摘要。左到右是研究流程、三階段框架、設計元件、評估、應用與挑戰，也就是本頁九節的順序。</div>
+    </div>
+
+    <h3>為什麼是現在</h3>
+    <div class="figure">
+      <img src="img/fig02-pubtrend.jpg" alt="ACM 資料庫 2015 到 2025 發表趨勢">
+      <div class="figcap">圖 2：ACM 數位圖書館 2015 到 2025 年的發表趨勢。HRI 本身十年來穩定在每年五百到一千篇，LLM 驅動的 HRI 從 2019 年的 1 篇跳到 2024 年的 311 篇，曲線跟 LLM 研究本身的爆發同步。</div>
+    </div>
+
+    <h3>四個研究問題</h3>
+    <p>作者是港科大（廣州）加浙大、四川大學華西醫院的團隊，2026 年 2 月放上 arXiv。他們問四件事：</p>
+    <ul class="plain">
+      <li>LLM 改變了人機互動的哪些基礎能力？（第 2 到 4 節：三階段框架）</li>
+      <li>LLM 怎麼被整合進系統設計？（第 5 節：互動通道、形態、自主程度）</li>
+      <li>這種系統怎麼評估？（第 6 節：研究方法與指標）</li>
+      <li>未來的機會與挑戰在哪？（第 7、8 節：應用地圖與十一個挑戰）</li>
+    </ul>
+
+    <h3>三個名詞的邊界</h3>
+    <p><span class="hl">機器人</span>：必須有實體，或在 VR、AR 裡有模擬的實體存在。純文字聊天機器人不算。這條線劃得很硬，因為整篇論文的主題就是「身體」帶來的差異。</p>
+    <p><span class="hl">人機互動（HRI）</span>：採 Sheridan 的四分類，也就是監督控制、遙操作、自動車輛、社交互動。研究方法靠使用者研究，不是只跑基準測試。</p>
+    <div class="figure">
+      <img src="img/fig03-hri-types.jpg" alt="Sheridan 四種人機互動型態">
+      <div class="figcap">圖 3：Sheridan 的四種型態。監督控制（人監看機器）、遙操作（人透過介面直接操作手臂）、自動車輛、社交互動。作者用這四型劃定「什麼算 HRI」的邊界。</div>
+    </div>
+    <p><span class="hl">LLM</span>：故意定得寬，涵蓋純文字模型、視覺語言模型（VLM）、多模態模型（MLLM）。理由是這個領域變太快，定太窄一年就過時。</p>
+
+    <h3>他們怎麼驗證</h3>
+    <p>這回答了上一頁你問的那個問題：怎麼確認資料是對的？這篇的做法是 <span class="hl">PRISMA 流程</span>，一套系統性回顧的標準規範，每個篩選步驟都要公開數字。</p>
+
+    <div class="figure">
+      <img src="img/fig04-prisma.jpg" alt="PRISMA 篩選流程圖">
+      <div class="figcap">圖 4：904 篇起步，去重與時間過濾後剩 846，標題摘要篩掉 449，全文審 397 篇再排除 311，最後 86 篇。排除原因前三名：沒有實體機器人（83）、沒有真人互動或評估（81）、純理論（59）。</div>
+    </div>
+
+    <p>納入條件很嚴：要同儕審查的完整論文、要有實體機器人、要有真人參與的互動或評估、LLM 要是系統核心元件而不是在未來工作段落提一下。排除了工作坊短文與技術報告。</p>
+    <div class="figure">
+      <img src="img/fig05-venues.jpg" alt="納入論文的期刊分布與年份">
+      <div class="figcap">圖 5：86 篇的出處與年份。HRI 會議 31%、CHI 13%、RO-MAN 10%、國際社交機器人期刊 8%。年份集中在 2024（32 篇）與 2025（46 篇），2021 年一篇都沒有。</div>
+    </div>
+
+    <p>編碼由兩位審查者獨立進行，算 <span class="hl">Cohen's kappa</span> 一致性係數。表面特徵（形態 0.894、應用領域 0.904）一致性高，需要詮釋的類別（感知理解 0.720、對齊 0.684）一致性低，他們開校準會議重新定義後再編碼一次。另外從 306 篇被排除的論文隨機抽 100 篇重審，只找到 3 篇邊緣案例，最後仍判定排除。</p>
+
+    <h3>這份地圖的可信度分層</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>層</th><th>內容</th><th>等級</th></tr>
+        <tr><td>底層證據</td><td>86 篇同儕審查論文，主要來自 HRI（31%）、CHI（13%）、RO-MAN（10%）等頂會，可在 llms-hri.github.io 逐篇查</td><td>已驗證</td></tr>
+        <tr><td>三階段框架與十一個挑戰</td><td>作者自己的綜合與命名，方法嚴謹但框架本身還沒被其他研究者採用或檢驗</td><td>社群層</td></tr>
+        <tr><td>這篇論文本身</td><td>arXiv 預印本，尚未通過期刊或會議審查</td><td>社群層</td></tr>
+        <tr><td>本頁對你專案的對照</td><td>我從論文推到你的 LanderPi 與 AI Little Monster，屬推論</td><td>未驗證</td></tr>
+      </table>
+    </div>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">篩選數字、納入條件、一致性係數：論文第 3 節與圖 4，可重做</li>
+        <li class="community">論文本身：arXiv 2602.15063v1，預印本</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>「系統性回顧」跟「找幾篇論文寫綜述」最大的差別是什麼？</li>
+        <li>為什麼作者把「純文字聊天機器人」排除在外？這跟你上一頁學的 Embodied AI 有什麼關係？</li>
+        <li>如果你要引用這篇的某個結論，你會引「作者說」還是「作者引用的那篇原始研究說」？為什麼？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2 -->
+<section class="section section--surface" id="s2">
+  <div class="section-inner">
+    <div class="section-num">Section 02</div>
+    <h2>三階段框架，第一階段：感知</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>傳統機器人學的迴圈是「感知、規劃、行動」。作者把它改成「感知、互動、對齊」：規劃變成跟人一起做的互動，行動之後多了一個持續修正的階段。感知階段的核心問題是：LLM 只懂文字，世界不是文字，中間怎麼接？</p>
+    </div>
+
+    <div class="figure">
+      <img src="img/fig06-sense-interaction-alignment.jpg" alt="感知、互動、對齊三階段框架圖">
+      <div class="figcap">圖 6：整篇論文的核心圖。三個階段、七個子類、十六個具體能力。方括號裡的數字是對應的論文編號。</div>
+    </div>
+
+    <h3>為什麼要改寫經典迴圈</h3>
+    <p>「感知、規劃、行動」假設機器人自己規劃、自己執行。LLM 進來之後，兩件事變了。第一，規劃不再是機器人獨自做的，人可以用自然語言隨時插進來改，所以「行動」變成「互動」。第二，生成式模型會漂移、會幻覺、會忘記你是誰，所以行動之後必須有一個 <span class="hl">對齊</span> 階段，靠記憶、個人化、修復機制把它拉回來。</p>
+
+    <h3>物理感知：三種把世界餵給 LLM 的方式</h3>
+    <p>LLM 吃的是文字（或多模態模型吃圖），機器人看到的是感測器數據。86 篇論文裡有三種接法，語意整合程度由低到高：</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>方式</th><th>做法</th><th>代價</th></tr>
+        <tr><td><span class="hl">靜態脈絡注入</span></td><td>把環境資訊直接寫進系統提示：房間裡有什麼、物品尺寸、空間關係。或用預先建好的語意地圖</td><td>環境一變就失效。適合實驗室，不適合動態場景</td></tr>
+        <tr><td><span class="hl">模組化感知轉文字</span></td><td>感測器到文字的管線：YOLO、SAM 抽物件標籤，語音辨識轉文字，溫度位置轉成敘述句。LLM 拿到的是文字描述，不碰原始影像</td><td>轉文字時會掉資訊。但便宜、可控、可除錯</td></tr>
+        <tr><td><span class="hl">整合式視覺語言推理</span></td><td>直接用 VLM 看畫面，即時生成場景描述，或接動態知識圖譜做可供性規劃。混合做法會加 ArUco 這類基準標記補精度</td><td>模型重、延遲高。而且「把多模態壓進同一個語意空間」本身就是未解問題</td></tr>
+      </table>
+    </div>
+
+    <p>對照你的 AMR 經驗：這三種方式其實就是介面契約的三種粒度。第一種是把契約寫死在提示裡，第二種是中間加一層翻譯員，第三種是讓模型自己讀原始訊號。</p>
+
+    <h3>人的理解：從「那裡有什麼」到「誰在那裡、為什麼」</h3>
+    <p><span class="hl">情緒落地</span>：把臉部偵測、語音的時間特徵、對話文字融合起來推情緒。進階的研究在做「同理落地」，讓機器人抓到懷舊、隱含的後悔這類跨多輪對話才看得出來的狀態。長期健康監測需要這個。</p>
+    <p><span class="hl">任務意圖解析</span>：把「幫我把那個東西拿過來」這種模糊句拆成任務類型、時間、設備的硬規格。輸入不限文字，草圖、肢體語言也能推目標。進一步可以預測任務進度，例如偵測使用者已經完成哪個步驟。</p>
+    <p><span class="hl">人類模型對齊</span>：最高層。LLM 當作「零樣本人類模型」，模擬「這個人現在會怎麼想」，也就是往心智理論走。對話層面是偵測換話題的意圖，架構層面是把社交規則寫成禁止與義務。</p>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">三種物理感知策略與人的理解三層：論文第 4.1 節，每項都對應多篇同儕審查研究（圖 6 方括號）</li>
+        <li class="community">「感知、互動、對齊」的改寫本身：作者提出的框架，單一來源</li>
+        <li class="unverified">跟 AMR 介面契約的對照：我的類比</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>「感知、規劃、行動」改成「感知、互動、對齊」，兩個改動各自回應了 LLM 的什麼特性？</li>
+        <li>模組化感知轉文字會掉資訊，但作者仍列為主流做法。你覺得為什麼？</li>
+        <li>「零樣本人類模型」是什麼意思？它跟情緒辨識的差別在哪？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3 -->
+<section class="section section--dark" id="s3">
+  <div class="section-inner">
+    <div class="section-num">Section 03</div>
+    <h2>第二階段：互動</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>LLM 讓機器人從「指令與回應」變成「生成式、能主動、能共創」。三種能力：生成社交溝通、協作共創、主動代理。每一種都有一個對應的陷阱，而且陷阱通常出在人的期待，不在技術。</p>
+    </div>
+
+    <h3>生成社交溝通</h3>
+    <p><span class="hl">人格調適與對話流暢</span>：不再用寫死的對話樹。研究者把心理學框架（例如五大人格特質）餵給模型，讓機器人依場合切換人格：帶點反諷的開朗語氣能提升親切感，自我揭露的風格適合健康調解，情緒引導適合長者照護。維持人格的技術重點是輪替時機預測，也就是分析對話歷史跟句法線索，抓準什麼時候該接話。</p>
+    <p><span class="hl">具身社交表達</span>：光會講話不夠，要同步講話、情緒狀態、身體動作（例如點頭）。常見架構是 <span class="hl">LLM 做規劃、規則系統做執行</span>：讓模型決定「現在要表達什麼」，讓規則決定「身體怎麼動」，這樣延遲才壓得下來。上一頁講的「LLM 不直接控制機器人」在社交層面也成立。</p>
+
+    <h3>協作共創</h3>
+    <p><span class="hl">任務導向</span>：走向共享自主，也就是控制權在人跟機器之間分配。GenComUI 把 LLM 生成的計畫視覺化，讓人先看再執行。LILAC 讓人在執行中用自然語言修正，即時更新機器人的控制空間，從很少的示範學會複雜操作。AR 與時間軸工具把抽象意圖跟精確控制接起來。</p>
+    <p><span class="hl">創意與社交</span>：機器人當創意鷹架。Jibo 跟小孩共同編故事，主動提出分岔的情節。治療情境下依長者的認知需求動態生成個人化敘事。</p>
+
+    <h3>主動代理</h3>
+    <p><span class="hl">社交發起</span>：使用者偏好會主動說明自己能做什麼的機器人。SONAR 這類系統在暖場階段主動閒聊，或用「情境控制」策略先管理期待。但這裡有個反直覺的發現：<span class="hl">給使用者太細的控制權，反而讓機器人看起來不像有智慧的社交夥伴</span>。低粒度的調整符合偏好，高粒度的調整會把它降級成工具。</p>
+    <p><span class="hl">預期式協助</span>：從多模態感知預測需求、主動開啟情境對話、依人格主動引導正面情緒、用好奇心策略主動問問題補知識缺口。要維持對齊，機器人要主動告知做完了什麼，遇到模糊要主動問，出錯時給結構化的原因說明。</p>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">五大人格條件化、LLM 規劃加規則執行、LILAC、GenComUI、SONAR、控制粒度悖論：論文第 4.2 節引用的同儕審查研究</li>
+        <li class="community">三種互動能力的分類：作者的框架</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>「LLM 做規劃、規則做執行」跟上一頁的模式 B（結構化動作翻譯）是同一件事嗎？差在哪？</li>
+        <li>為什麼給使用者更多控制權反而會降低機器人的社交存在感？</li>
+        <li>主動代理帶來的三個對齊要求（告知、澄清、解釋）各自防的是什麼問題？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 4 -->
+<section class="section" id="s4">
+  <div class="section-inner">
+    <div class="section-num">Section 04</div>
+    <h2>第三階段：對齊</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>感知跟互動只保證「現在能動」，不保證「長期還對」。生成式互動會幻覺、會偏移。對齊階段靠兩組機制：個人化與記憶把關係拉長，三層修復把錯誤拉回來。這一節跟上一頁的安全層是同一個問題的兩面。</p>
+    </div>
+
+    <h3>長期個人化與記憶</h3>
+    <p><span class="hl">持續個人化</span>：短期調適處理安全跟對話節奏，長期個人化要改決策模型本身。傳統強化學習太吃資料，所以研究者用 LLM 加速：ChatAdp 用 ChatGPT 生成合成回饋，幾乎不用人力就做出個人化訓練資料。LAMS 讓使用者用自然語言直接教機器人新的邏輯。VITA 為每個人養一個專屬的使用者模型，隨時間對齊人格特質。</p>
+    <p><span class="hl">情節記憶整合</span>：跨對話累積的共同歷史。技術上用 DSR 圖這類記憶架構記偏好話題跟認知模式，之後依歷史調教練策略或語速。有系統用兩個 LLM 組成「感知、檢索、行動」的持續迴圈。一個細節值得記：<span class="hl">記憶怎麼被編碼跟取出，取決於機器人自己的人格</span>。同一件事，開朗的機器人跟嚴肅的機器人記住的重點不一樣。</p>
+
+    <h3>三層修復</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>層</th><th>修什麼</th><th>怎麼修</th></tr>
+        <tr><td><span class="hl">行為層</span></td><td>實體任務失敗</td><td>控制層面：LILAC 讓人用語言修正控制空間。預防層面：UJI-Butler 在執行前先讓人審核計畫。邏輯層面：RobotGPT 用模擬器裡的修正機器人反覆分析並修正 LLM 生成的程式碼，直到跑成功</td></tr>
+        <tr><td><span class="hl">情緒層</span></td><td>社交互動崩壞</td><td>用視覺線索或手勢化解誤會。長期研究發現修復策略會隨關係演變：一開始是通用道歉，後來變成能承認對方感受的同理結構</td></tr>
+        <tr><td><span class="hl">倫理層</span></td><td>違反社會規範</td><td>SONAR 用禁止與義務的形式規則強制社交適當性，並用線上學習調整「社交距離」這類模糊定義。對弱勢族群要透明說明限制，敏感話題設護欄</td></tr>
+      </table>
+    </div>
+
+    <h3>跟上一頁的安全層怎麼對上</h3>
+    <div class="flow-diagram">
+      上一頁：LLM 意圖 <span class="arrow">→</span> 沙箱預演 <span class="arrow">→</span> 許可 <span class="arrow">→</span> 執行 <span class="arrow">→</span> 證據回執<br>
+      這一頁：行為層修復 <span class="arrow">=</span> 執行前的沙箱與審核 <span class="arrow">+</span> 執行後的修正迴圈
+    </div>
+    <p>ROSClaw 的沙箱預演對應這裡的「預防層面」（UJI-Butler 的人工審核），證據回執對應「出錯時給結構化原因」。差別是上一頁只管物理安全，這一頁多了情緒層跟倫理層，因為對象是人，不只是桌面。</p>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">ChatAdp、LAMS、VITA、DSR 圖記憶、LILAC、UJI-Butler、RobotGPT、SONAR、道歉演變的長期研究：論文第 4.3 節引用的同儕審查研究</li>
+        <li class="community">「三層修復」的分類：作者的框架</li>
+        <li class="unverified">跟 ROSClaw 安全層的對照：我的推論</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>為什麼作者說「記憶的編碼跟取出取決於機器人的人格」？這對設計一個陪伴型角色有什麼含義？</li>
+        <li>行為層修復的三個位置（控制、預防、邏輯）分別在執行流程的哪個時間點？</li>
+        <li>情緒層修復「從通用道歉演變成同理結構」，這暗示修復策略應該是固定的還是隨關係變的？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 5 -->
+<section class="section section--accent" id="s5">
+  <div class="section-inner">
+    <div class="section-num">Section 05</div>
+    <h2>設計時的三個決定</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>框架講能力，這一節講你動手做時真正要決定的三件事：用什麼通道互動、機器人長什麼樣、它有多自主。三個決定互相牽制，形態限制通道，自主程度決定風險。</p>
+    </div>
+
+    <h3>決定一：互動通道</h3>
+    <div class="figure">
+      <img src="img/fig07-modality.jpg" alt="互動通道分類圖">
+      <div class="figcap">圖 7：文字、語音、視覺、動作、混合、觸覺與距離。多數成熟系統是混合的。</div>
+    </div>
+    <p><span class="hl">文字</span>：最直接，指令、對話、螢幕輸出都用它。<span class="hl">語音</span>：主流管線是語音辨識轉文字、LLM 處理、再文字轉語音。新趨勢是抓語調跟語速這類副語言特徵，以及讓語音跟身體動作同步。<span class="hl">視覺</span>：螢幕、AR 預覽、表情、LED 呼吸燈，還有 VLM 讀場景。</p>
+    <p><span class="hl">動作</span>：這裡有一句話跟上一頁完全對上：LLM 管高階任務規劃，把抽象指令翻成動作序列，<span class="hl">低階控制仍靠傳統機器人技術</span>。動作分功能性（抓取、導航、組裝）跟表達性（手勢、狀態顯示，例如空氣清淨機用動作表示運轉強度）。</p>
+    <p><span class="hl">混合</span>：把語音跟指示手勢並行處理來消歧義，語音加草圖加感測器做空間任務。<span class="hl">觸覺</span>：手動拉機器手臂示範、觸控輸入，進階的在模擬「摸到活物」的感覺。<span class="hl">距離</span>：機器人調整跟人的距離來管理對話動態，多數系統本來就設計成同一空間面對面。</p>
+
+    <h3>決定二：形態</h3>
+    <div class="figure">
+      <img src="img/fig09-morphology.jpg" alt="機器人形態分類圖">
+      <div class="figcap">圖 9：人形、功能型（移動平台與手臂）、動物型、VR 與 AR、桌面陪伴型。</div>
+    </div>
+    <p><span class="hl">人形</span>最多：Pepper、Nao、Furhat，因為適合社交場景。<span class="hl">功能型</span>主導任務場景：TurtleBot、Segway 這類移動平台，還有各種機械手臂。<span class="hl">其他</span>：動物型、桌面陪伴型（Haru）、車載代理。形態不只是外觀，它直接限制機器人能表達什麼，這在第 8 節的挑戰 5 會回來。</p>
+
+    <h3>決定三：自主程度</h3>
+    <div class="figure">
+      <img src="img/fig08-autonomy.jpg" alt="自主程度光譜圖">
+      <div class="figcap">圖 8：遙操作、半自主、全自主。半自主的研究最多，因為它是最實際的失敗緩解策略。</div>
+    </div>
+    <p><span class="hl">遙操作</span>：人直接控制。LLM 在這裡的角色是把操作者的高階指令翻成低階動作以降低認知負荷。即使如此仍常有人工審核，例如實驗者先核准 LLM 生成的回應機器人才講。遙操作也是模仿學習的資料來源。</p>
+    <p><span class="hl">半自主</span>：明確被當作 <span class="hl">失敗緩解策略</span> 用，防對話崩壞、防不當回應、防物理風險。實作方式包括「綠野仙蹤」式的幕後人工、直接介入推進任務、線上修正、人工篩選 AI 生成內容。</p>
+    <p><span class="hl">全自主</span>：目標是研究「湧現的互動」，也就是機器人自己生成對話跟行為之後，人會怎麼反應。實作幾乎都是混合架構：中央 LLM 加專用元件（身體追蹤的視覺模型、輪替預測模型、標準語音管線），有些加知識圖譜或強化學習。</p>
+
+    <h3>三個決定，各問自己一句</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>決定</th><th>問自己</th></tr>
+        <tr><td>通道</td><td>哪一個通道的失敗最不能接受？先把那個做穩，其他當加分</td></tr>
+        <tr><td>形態</td><td>它講話有多流利，身體就得跟得上多少？跟不上的落差怎麼老實呈現</td></tr>
+        <tr><td>自主</td><td>它出錯時誰擋得住？擋不住的部分就不該全自主</td></tr>
+      </table>
+    </div>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">七種通道、三類形態、三級自主的分類與案例：論文第 5 節，編碼一致性 0.768、0.894、0.846</li>
+        <li class="unverified">「各問自己一句」：我的整理，不是論文內容</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>「LLM 管高階規劃、低階靠傳統技術」這句話在動作通道跟在社交表達上各對應什麼架構？</li>
+        <li>為什麼半自主的研究數量最多？它在研究流程裡扮演什麼角色？</li>
+        <li>全自主系統為什麼幾乎都是混合架構，而不是一個 LLM 包辦？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 6 -->
+<section class="section section--surface" id="s6">
+  <div class="section-inner">
+    <div class="section-num">Section 06</div>
+    <h2>怎麼知道它有沒有用</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>HRI 跟純技術研究最大的差別是評估對象包含人。這一節濃縮成兩件事：研究者用哪些方法收資料，以及客觀跟主觀兩類指標各有什麼。你不做學術研究，但做專案時「怎麼判斷它好不好」需要這套語言。</p>
+    </div>
+
+    <h3>收資料的方法</h3>
+    <div class="figure">
+      <img src="img/fig10-study-methods.jpg" alt="研究方法分類圖">
+      <div class="figcap">圖 10：實驗室實驗、田野部署、訪談、問卷、技術評估，加上綠野仙蹤、個案、模擬、共同設計工作坊等補充方法。</div>
+    </div>
+    <p><span class="hl">實驗室實驗</span>是基石，控制變因看 LLM 人格、好奇心、多模態推理怎麼影響體驗。<span class="hl">田野部署</span>看真實環境跟長期使用：教室、公共節慶、家庭、長照中心。<span class="hl">訪談</span>抓細膩的感受與理由，也用在設計初期跟專家回饋。<span class="hl">問卷</span>前測收背景，後測量享受度、感知智慧、可用性。<span class="hl">技術評估</span>量延遲、程式碼執行成功率、生成語言品質，以及消融測試隔離 LLM 的貢獻。</p>
+    <p>值得單獨記的是 <span class="hl">綠野仙蹤法</span>：幕後由人假扮系統，用來模擬還做不到的能力，或在模型不穩時保護使用者研究。它是原型階段的標準工具，不是作弊。</p>
+
+    <h3>兩類指標</h3>
+    <div class="figure">
+      <img src="img/fig11-evaluation.jpg" alt="評估指標分類圖">
+      <div class="figcap">圖 11：客觀指標量系統表現，主觀指標量人的感受。兩邊都因為 LLM 多了新維度。</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>類</th><th>指標</th><th>LLM 帶來的新東西</th></tr>
+        <tr><td rowspan="3">客觀</td><td>效率與時間：任務完成時間、回應延遲、對話輪數</td><td>API 延遲成為輪替是否自然的關鍵。有研究 LLM 讓多模態任務時間減半</td></tr>
+        <tr><td>準確與表現：任務成功率、細粒度準確分數</td><td>語意理解精度、使用者狀態估計準確率</td></tr>
+        <tr><td>LLM 專屬：召回率、精確率、F1</td><td>程式碼生成用 Pylint 分數，行為跟專家設計的相似度</td></tr>
+        <tr><td rowspan="6">主觀</td><td>感知與關係體驗：滿意度、接受度、投入度</td><td>社交對話品質、情緒安全、對 AI 生成內容的態度、對透明與欺騙的顧慮</td></tr>
+        <tr><td>感知智慧（Godspeed 問卷）</td><td>幻覺會直接打擊感知智慧；心智理論跟情緒智慧成為新維度</td></tr>
+        <tr><td>擬人化</td><td>對話能力、人格一致性、能否表達價值觀。過度擬人會進恐怖谷</td></tr>
+        <tr><td>可用性（SUS 量表）</td><td>加上聊天機器人可用性量表、個人化偏好遵從、透明與可調性</td></tr>
+        <tr><td>安全</td><td>多了 <span class="hl">內容安全</span>：生成不當內容的風險，以及邏輯失敗轉成物理風險</td></tr>
+        <tr><td>認知負荷（NASA-TLX）</td><td>雙面性：降低溝通成本，但多代理協調跟錯誤恢復可能增加負荷。使用者對 LLM 的既有期待也會影響感受</td></tr>
+      </table>
+    </div>
+
+    <h3>做個人專案怎麼用</h3>
+    <p>不需要全套。挑兩個客觀（例如任務成功率、回應延遲）加兩個主觀（例如 SUS 十題、一句話問「你覺得它懂你嗎」），每次改版量一次，就已經比多數個人專案嚴謹。重點是改版前後用同一把尺。</p>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">研究方法與指標分類、Godspeed、SUS、NASA-TLX 的使用、任務時間減半的研究：論文第 6 節</li>
+        <li class="unverified">「兩個客觀加兩個主觀」：我的建議</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>綠野仙蹤法在 LLM 時代還有必要嗎？論文給的理由是什麼？</li>
+        <li>LLM 讓「安全」這個指標多了哪一個維度？它跟物理安全的關係是什麼？</li>
+        <li>認知負荷的「雙面性」指什麼？舉一個 LLM 反而增加負荷的情境。</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 7 -->
+<section class="section" id="s7">
+  <div class="section-inner">
+    <div class="section-num">Section 07</div>
+    <h2>應用地圖</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>八個應用領域，每個領域再依 LLM 貢獻的能力細分。這張圖的用法是定位：你的專案落在哪一格，那一格已經有誰做過什麼。</p>
+    </div>
+
+    <div class="figure">
+      <img src="img/fig12-applications.jpg" alt="應用領域分類圖">
+      <div class="figcap">圖 12：八個領域與 LLM 在各領域的具體貢獻。方括號是論文編號。</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr><th>領域</th><th>LLM 在做什麼</th></tr>
+        <tr><td>社交與對話系統</td><td>動態情緒表達與同步、人格模擬、社交規範感知與輪替預測</td></tr>
+        <tr><td>健康與福祉</td><td>認知健康評估、情感支持與同理落地、互動修復</td></tr>
+        <tr><td>家庭與日常</td><td>任務規劃、協作（煮飯、備餐）、表達性共居互動（自我揭露、有情緒的存在感）</td></tr>
+        <tr><td>公共空間服務</td><td>開放環境任務處理、公共資訊傳遞</td></tr>
+        <tr><td>工業製造</td><td>自然語言編程與控制、安全感知規劃、互動式計畫修正</td></tr>
+        <tr><td>AR 與 VR</td><td>沉浸式客製化、即時回饋與意義建構、共享自主與模式管理</td></tr>
+        <tr><td>教學與教育</td><td>依程度生成內容、動態提問、創意共創與鷹架</td></tr>
+        <tr><td>其他</td><td>修正性語言指令、通用互動強化、遙操作輔助</td></tr>
+      </table>
+    </div>
+
+    <p>你的兩個專案的位置：AI Little Monster 跨「社交與對話」跟「家庭與日常」的表達性共居那一格。LanderPi 落在「家庭與日常」的任務規劃與協作，以及「其他」的修正性語言指令。兩格都已經有同儕審查研究可以追。</p>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">八領域分類：論文第 7 節與圖 12，編碼一致性 0.904</li>
+        <li class="unverified">你的專案定位：我的判斷</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>「表達性共居互動」跟「社交與對話系統」的差別在哪？為什麼作者分開放？</li>
+        <li>如果你要為 LanderPi 找一篇最接近的參考研究，你會從哪一格開始翻？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 8 -->
+<section class="section section--dark" id="s8">
+  <div class="section-inner">
+    <div class="section-num">Section 08</div>
+    <h2>十一個挑戰</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>作者把挑戰照三階段分組：感知四個、互動四個、對齊三個。每一條都是踩坑前的預警。標了「跟你有關」的是我判斷對你專案最直接的。</p>
+    </div>
+
+    <div class="group-label">感知：理解與感知</div>
+
+    <div class="challenge">
+      <div class="num">01</div>
+      <div>
+        <h4>LLM 理解的可靠度</h4>
+        <p>表層是延遲、不一致、不可預測，這些直接破壞即時感知。深層是高階推理的脆弱：理解幽默會失敗，具身情境下的空間與數量推理會失敗。現有補救（落地提示、多角色驗證、人在迴圈修正）又各自帶來新的複雜度跟不透明。</p>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="num">02</div>
+      <div>
+        <h4>情緒智慧的多模態感知</h4>
+        <p>機器人已經能流暢回應、能加語調跟「喔」「哇」這類感嘆詞，但猶豫、壓力、群體情緒這些訊號本質上就是嘈雜跟模糊的。另一個落差：能生成有同理心的回應，不等於有運作中的心智理論。多數框架在長期情境下會露餡，變成「理解的假象」。輪替也卡在這裡：機器人還做不到用眼神、語助詞、微停頓來協商對話流。</p>
+        <p class="for-you">跟你有關：陪伴型角色最容易在這裡被看穿。</p>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="num">03</div>
+      <div>
+        <h4>多模態訊息的感知與對齊</h4>
+        <p>難的不是收訊號，是訊號衝突時怎麼裁決：使用者嘴上講笑話，臉卻是生氣的。現在的架構缺這種仲裁邏輯，錯誤會串連。而且對齊時間戳不夠，系統要能把「我怎麼解讀這些融合訊號」講給使用者聽。MARCER 顯示透明回饋能緩解，但細微社交線索的落差沒解決反而讓人更挫折。要的是依情境動態決定信哪個通道的跨模態推理，不是把所有東西塞進一個文字提示。</p>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="num">04</div>
+      <div>
+        <h4>多使用者情境的公平參與</h4>
+        <p>咖啡廳、教室、家庭都有多個人。機器人要平衡偏好，還要看懂人跟人之間的動態，避免排擠。多人時連「這句話是對我說還是對別人說」都難判斷。人跟人之間的隱性偏見會帶進來，機器人沒有足夠社交感知就會放大不平等。</p>
+      </div>
+    </div>
+
+    <div class="group-label">互動：行動與代理</div>
+
+    <div class="challenge">
+      <div class="num">05</div>
+      <div>
+        <h4>形態與社交智慧要對齊</h4>
+        <p>LLM 讓機器人講話很流利，人就會期待它的頭跟手也能對應表達。但講得越流利、身體越粗糙，期待落差越大；幻覺會造成信任斷裂；太擬人會進恐怖谷。作者的建議是刻意平衡，例如 <span class="hl">優先考慮物理上的順從而不是擬人的逼真</span>，或加明確的物理線索，避免過度人化。</p>
+        <p class="for-you">跟你有關：娃娃身體跟 LLM 嘴巴的落差就是這一條。</p>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="num">06</div>
+      <div>
+        <h4>自主與人為監督的平衡</h4>
+        <p>三個反作用力：太細粒度的終端使用者編程會讓機器人被當工具，降低智慧感跟社交存在感；LLM 自動化提升效率，但可能把注意力拉到個人結果上，壓縮跟其他人溝通的機會；主動的社交行為（閒聊、情緒回應）會給使用者製造不想要的互動義務。出路是混合自主，圍繞共享控制或人在迴圈設計。</p>
+        <p class="for-you">跟你有關：LanderPi 的自主程度該切在哪。</p>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="num">07</div>
+      <div>
+        <h4>信任與過度信任</h4>
+        <p>個人化、社交規範感知、擬人度都會降低信任門檻，但擬人線索觸發的社交解讀常超過系統真實的可靠度。技術不透明妨礙信任校準：幻覺跟不一致的推理在「表面自信」的包裝下製造未校準的過度信任。而且信任修復是不對稱的：道歉跟解釋有用，但失去的信心怎麼重建仍是開放問題。</p>
+        <p class="for-you">跟你有關：依代越像朋友，這條越危險。</p>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="num">08</div>
+      <div>
+        <h4>隱私與安全風險</h4>
+        <p>機器人是私人空間裡的具身觀察者，會做「語意監控」：不只錄資料，是持續推理你的習慣跟社交動態。LLM 當決策引擎會帶來不可預測的物理風險，幻覺或不透明可能導致危險動作。刪除提示、分齡指引這類反應式措施擋不住「一個把推理物理化的代理」本身的不可預測性。安全規範還跨文化不同。</p>
+      </div>
+    </div>
+
+    <div class="group-label">對齊：調適與修復</div>
+
+    <div class="challenge">
+      <div class="num">09</div>
+      <div>
+        <h4>個人化與社交對齊的穩定性</h4>
+        <p>個人化能維持享受，但也會在弱勢使用者身上製造情感依賴：一項三年的失智症研究顯示，機器人突然撤走會造成顯著傷害。同理校準短期強、長期會失去新鮮感並侵蝕信任。修復策略太精緻或不相關反而打斷對話流。還有一個更深的問題：<span class="hl">有些人偏好機器人陪伴，正是因為它繞過了人際關係的不可預測與情緒複雜度</span>。如果這個偏好普及，個人化對齊跟長期福祉怎麼平衡，沒人有答案。</p>
+        <p class="for-you">跟你有關：這是依代這個概念的核心倫理問題。</p>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="num">10</div>
+      <div>
+        <h4>維持長期投入</h4>
+        <p>新鮮感褪去之後怎麼辦。現有系統常無法把短期記憶轉成穩定成長的人格，行為模型追不上人的期待變化，蜜月期過後互動就「走味」。方法論上的缺口是縱向驗證：多數證據是快照，短期部署看不到角色跟信任動態怎麼隨時間演變，也看不到適應疲勞。從工具變成持久夥伴還有情感依賴跟價值漂移的倫理問題。</p>
+        <p class="for-you">跟你有關：一個月後它還值得每天講話嗎。</p>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="num">11</div>
+      <div>
+        <h4>主動修復要適應不同情境</h4>
+        <p>修復不能停在反應式的樣板。它要變成主動、能預測錯誤、能分辨真正的打斷跟雜訊、能提出有根據的替代方案、能透明說明自己的限制。這把修復從「糾錯動作」變成「持續的社交情緒協商」。但怎麼依領域校準（從閒聊到高風險任務）研究還很少。</p>
+      </div>
+    </div>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">每個挑戰底下引用的具體研究（幽默理解失敗、MARCER、三年失智症研究、控制粒度、恐怖谷等）：同儕審查</li>
+        <li class="community">十一條的歸納與分組：作者的綜合，單一來源</li>
+        <li class="unverified">「跟你有關」的標記：我的判斷</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>挑戰 5 建議「優先考慮物理上的順從而不是擬人的逼真」，用你自己的話說這是什麼意思？</li>
+        <li>挑戰 7 說信任修復是「不對稱的」，不對稱在哪？</li>
+        <li>挑戰 9 提到有些人偏好機器人陪伴是因為它「繞過人際關係的複雜度」。你認為這是設計該滿足的需求，還是該警惕的訊號？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Section 9 -->
+<section class="section section--surface" id="s9">
+  <div class="section-inner">
+    <div class="section-num">Section 09</div>
+    <h2>跟你的專案怎麼接</h2>
+
+    <div class="learning-point">
+      <div class="label">學習重點</div>
+      <p>這篇對 AI Little Monster 的相關度高過 LanderPi。它的核心（社交理解、記憶、個人化、關係修復、依賴風險、信任校準）正是「依代」要面對的。LanderPi 用得到的是任務意圖、功能型形態、半自主、行為層修復。以下全是我的對照，屬未驗證。</p>
+    </div>
+
+    <h3>AI Little Monster：依代</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>論文的概念</th><th>對依代的意義</th></tr>
+        <tr><td>情緒落地、人類模型對齊（第 2 節）</td><td>手機感官層不只辨識情緒，要跨多輪對話抓「隱含的狀態」。但挑戰 2 提醒：這裡最容易做出理解的假象</td></tr>
+        <tr><td>人格調適、記憶依人格編碼（第 3、4 節）</td><td>依代的人格不是裝飾，它決定記住什麼、忘掉什麼。人格先定，記憶架構才能定</td></tr>
+        <tr><td>主動代理的互動義務（挑戰 6）</td><td>主動開口是雙面刃。它主動講話，就是在給你義務回應。頻率跟時機要設計，不是越主動越好</td></tr>
+        <tr><td>形態落差（挑戰 5）</td><td>娃娃身體表達力有限，LLM 嘴巴表達力無限。與其讓它假裝有表情，不如老實用簡單的物理線索（燈、姿勢、一個動作）表示狀態</td></tr>
+        <tr><td>情感依賴、新鮮感褪去（挑戰 9、10）</td><td>依代的定義是「讓已存在的關係來住」，不是製造新依賴。這條界線要寫進設計原則，而且要有「它不在的時候怎麼辦」的答案</td></tr>
+        <tr><td>自主程度（第 5 節）</td><td>半自主。你自己就在迴圈裡，這反而是優勢：不需要全自主就能運作</td></tr>
+      </table>
+    </div>
+
+    <h3>LanderPi</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>論文的概念</th><th style="text-transform:none;">對 LanderPi 的意義</th></tr>
+        <tr><td>任務意圖解析（第 2 節）</td><td>「把那個拿過來」拆成任務類型、目標、限制的硬規格，這一步就是上一頁的模式 B 的輸入端</td></tr>
+        <tr><td>動作通道：LLM 高階、傳統低階（第 5 節）</td><td>跟姐妹頁的架構完全一致：Mac Mini 跑 LLM 出計畫，Pi 5 的 ROS 2 跑執行</td></tr>
+        <tr><td>行為層修復（第 4 節）</td><td>三個位置都能用：執行前人工審核計畫、模擬器裡先跑一次、執行中用語言修正</td></tr>
+        <tr><td>半自主當失敗緩解（第 5 節）</td><td>第一版就該是半自主，每個動作先給你看再執行。這不是退而求其次，是主流做法</td></tr>
+        <tr><td>評估（第 6 節）</td><td>任務成功率、回應延遲、加一個「你覺得它聽懂了嗎」的主觀題。改版前後同一把尺</td></tr>
+      </table>
+    </div>
+
+    <h3>兩頁合起來看</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th></th><th>LLM × ROS 2</th><th>LLM × HRI（這頁）</th></tr>
+        <tr><td>問題</td><td>怎麼把語言接上動作</td><td>接上之後人跟它之間要設計什麼</td></tr>
+        <tr><td>核心概念</td><td>三種架構模式、安全層、延遲</td><td>三階段框架、三個設計決定、十一個挑戰</td></tr>
+        <tr><td>安全</td><td>物理安全：沙箱、許可、回執</td><td>加上情緒層跟倫理層的修復</td></tr>
+        <tr><td>證據類型</td><td>兩篇同儕審查加兩個活躍開源專案</td><td>86 篇同儕審查的系統性回顧</td></tr>
+        <tr><td>對哪個專案更直接</td><td>LanderPi</td><td>AI Little Monster</td></tr>
+      </table>
+    </div>
+
+    <div class="source">
+      <div class="label">來源</div>
+      <ul>
+        <li class="verified">論文各節的概念：如各節所標</li>
+        <li class="unverified">全部對照：我從論文推到你的專案，沒有實測</li>
+      </ul>
+    </div>
+
+    <div class="self-check">
+      <div class="label">自我檢查</div>
+      <ol>
+        <li>「人格先定，記憶架構才能定」這個順序，你同意嗎？反過來會怎樣？</li>
+        <li>依代「不製造新依賴」這條界線，在設計上有哪些具體可以做的事？</li>
+        <li>LanderPi 第一版做半自主，你會把「人工審核」放在哪一個時間點？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Sources Legend + Footer -->
+<section class="section">
+  <div class="section-inner">
+    <h3 style="margin-top:0;">來源可信度圖例</h3>
+    <ul style="list-style:none; padding:0; font-size: 14px;">
+      <li style="padding-left:20px; position:relative; margin-bottom:8px;">
+        <span style="position:absolute; left:0; top:6px; width:8px; height:8px; border-radius:50%; background:var(--accent);"></span>
+        <strong>已驗證</strong>：同儕審查論文、可重做的篩選流程、或實測經驗
+      </li>
+      <li style="padding-left:20px; position:relative; margin-bottom:8px;">
+        <span style="position:absolute; left:0; top:6px; width:8px; height:8px; border-radius:50%; border: 1.5px solid var(--text-dim); background:transparent;"></span>
+        <strong>社群驗證</strong>：作者的綜合框架、預印本、活躍開源專案
+      </li>
+      <li style="padding-left:20px; position:relative;">
+        <span style="position:absolute; left:0; top:6px; width:8px; height:8px; border-radius:50%; background:var(--surface-2);"></span>
+        <strong>未驗證</strong>：單一來源聲稱、我的推論、或廠商宣稱
+      </li>
+    </ul>
+
+    <div style="margin-top:40px; padding-top:24px; border-top:1px solid var(--surface-2);">
+      <h3 style="margin-top:0;">參考文獻</h3>
+      <ol style="padding-left:20px; font-size:13px; color:var(--text-dim); line-height:1.8;">
+        <li>Wang, Y., Xu, Y., Nikolova, A., Wang, Y., Wang, J., Wang, C., &amp; Tong, X. (2026). "How Do We Research Human-Robot Interaction in the Age of Large Language Models? A Systematic Review." <em>arXiv</em> 2602.15063v1. 本頁所有圖片取自此論文。</li>
+        <li>作者建立的 86 篇論文資料庫：llms-hri.github.io</li>
+        <li>Page, M.J. et al. (2021). PRISMA 2020 statement. <em>BMJ</em>. 系統性回顧的報告規範。</li>
+        <li>Sheridan, T.B. (2016). "Human–Robot Interaction: Status and Challenges." <em>Human Factors</em>. 四種互動型態的分類。</li>
+        <li>Cui et al. (2023). LILAC：用自然語言線上修正機器人控制空間。論文第 4.2.2 節引用。</li>
+        <li>Dell’Anna &amp; Jamshidnejad (2024). SONAR：以禁止與義務規則強制社交適當性的架構。論文第 4.2.3 與 4.3.2 節引用。</li>
+        <li>Jin et al. (2024). RobotGPT：模擬器內修正機器人反覆修正生成程式碼。論文第 4.3.2 節引用。</li>
+        <li>Ge et al. (2025). GenComUI：LLM 生成計畫的視覺化驗證介面。論文第 4.2.2 節引用。</li>
+        <li>Ikeda et al. (2025). MARCER：多模態透明回饋緩解對齊落差。論文第 8 節挑戰 3 引用。</li>
+        <li>Hsu et al. (2025a). 三年失智症機器人研究，從綠野仙蹤到 GPT 驅動自主的過渡。論文第 3.2.2 節與挑戰 9 引用。</li>
+        <li>Skantze &amp; Irfan (2025). 輪替預測與 LLM 對話中的非語言線索瓶頸。論文第 4.2.1 節與挑戰 2、4 引用。</li>
+        <li>姐妹頁：<a href="../embodied-ai-ros2/" style="color:var(--text-dim);">LLM × ROS 2 — Embodied AI 指南</a></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>Charles Yang · ProtoLearn · 2026</p>
+  <p><a href="../">← 回到作品集</a></p>
+</footer>
+
+</body>
+</html>
